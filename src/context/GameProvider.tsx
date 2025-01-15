@@ -5,7 +5,6 @@ import { GameContext, GameContextType, GameState, Player } from './GameContext';
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [gameState, setGameState] = useState<GameState>('setup');
   const [players, setPlayers] = useState<Player[]>([]);
-
   const [currentRound, setCurrentRound] = useState(1);
   const [totalRounds, setTotalRounds] = useState(5);
   const [targetPlayerIndex, setTargetPlayerIndex] = useState(0);
@@ -37,25 +36,27 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const isGameOver =
     currentRound === totalRounds && targetPlayerIndex + 1 === players.length;
 
+  const getNextCards = () => {
+    const turnsFromPreviousRounds = (currentRound - 1) * players.length;
+    const turnsInCurrentRound = targetPlayerIndex;
+    const currentTurns = turnsFromPreviousRounds + turnsInCurrentRound + 1;
+    return cardDeck.slice(currentTurns * 5, currentTurns * 5 + 5);
+  };
+
   const handleUpdateScore = () => {
-    // Update scores for non-target players
+    // Update scores for non-target players after reviewing the group prediction results
 
     const playersWithUpdatedScore = players.map((player, idx) => ({
       ...player,
       score:
         idx === targetPlayerIndex ? player.score : player.score + roundScore,
     }));
-
     setPlayers(playersWithUpdatedScore);
 
     if (isGameOver) {
       setGameState('gameOver');
     } else {
-      // get next cards
-      const nextCards = cardDeck.slice(
-        (currentRound + 1) * 5,
-        (currentRound + 1) * 5 + 5
-      );
+      const nextCards = getNextCards();
       setCurrentCards(nextCards);
       setTargetRankings([]);
       setGroupPredictions([]);
