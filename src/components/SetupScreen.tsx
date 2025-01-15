@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
-import { Player } from './PreferencesGame';
+import { useGameContext } from '../context/GameContext';
 
-export const SetupScreen = ({
-  setPlayers,
-  totalRounds,
-  setTotalRounds,
-  players,
-  handleStartGame,
-}: {
-  setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
-  totalRounds: number;
-  setTotalRounds: React.Dispatch<React.SetStateAction<number>>;
-  players: Player[];
-  handleStartGame: () => void;
-}) => {
+export const SetupScreen = () => {
   const [newPlayerName, setNewPlayerName] = useState('');
+  const { setTotalRounds, totalRounds, players, setPlayers, handleStartGame } =
+    useGameContext();
   const handleNewPlayerNameChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {

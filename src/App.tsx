@@ -1,10 +1,13 @@
 import './App.css';
 import PreferencesGame from './components/PreferencesGame';
+import { GameProvider } from './context/GameProvider';
 
 function App() {
   return (
     <>
-      <PreferencesGame defaultRounds={5} />
+      <GameProvider>
+        <PreferencesGame />
+      </GameProvider>
     </>
   );
 }

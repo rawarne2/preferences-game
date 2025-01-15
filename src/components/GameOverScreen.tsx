@@ -1,12 +1,7 @@
-import { Player } from './PreferencesGame';
+import { useGameContext } from '../context/GameContext';
 
-export const GameOverScreen = ({
-  players,
-  handleResetGame,
-}: {
-  players: Player[];
-  handleResetGame: () => void;
-}) => {
+export const GameOverScreen = () => {
+  const { players, handleResetGame } = useGameContext();
   const winner = [...players].sort((a, b) => a.score - b.score)[0];
   const isTie = players.filter((p) => p.score === winner.score).length > 1;
 
