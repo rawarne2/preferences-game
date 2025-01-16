@@ -7,12 +7,12 @@ export const GameOverScreen = () => {
 
   return (
     <div className='flex flex-col items-center p-4'>
-      <h2 className='text-3xl font-bold mb-6'>Game Over!</h2>
+      <h2 className='text-3xl font-bold lg:mb-6'>Game Over!</h2>
 
       {isTie ? (
-        <p className='text-xl mb-4'>It's a tie!</p>
+        <p className='text-xl lg:mb-4'>It's a tie!</p>
       ) : (
-        <p className='text-xl mb-4'>Winner: {winner.name}!</p>
+        <p className='text-xl lg:mb-4'>Winner: {winner.name}!</p>
       )}
 
       <div className='w-full max-w-md'>

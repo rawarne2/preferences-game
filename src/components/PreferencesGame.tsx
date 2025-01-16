@@ -11,7 +11,7 @@ const PreferencesGame: React.FC = () => {
 
   // Render the appropriate screen based on game state
   return (
-    <div className='min-h-screen bg-white'>
+    <>
       {gameState === 'setup' && <SetupScreen />}
       {(gameState === 'targetRanking' || gameState === 'groupPrediction') && (
         <CardRankingScreen />
@@ -21,25 +21,23 @@ const PreferencesGame: React.FC = () => {
 
       {/* Game progress indicator */}
       {gameState !== 'setup' && gameState !== 'gameOver' && (
-        <div className='fixed bottom-0 left-0 right-0 bg-gray-100 p-4'>
-          <div className='flex justify-between items-center max-w-4xl mx-auto'>
-            <p>
-              Round: {currentRound}/{totalRounds}
-            </p>
-            <div className='flex space-x-4'>
-              {players.map((player, index) => (
-                <p
-                  key={index}
-                  className={index === targetPlayerIndex ? 'font-bold' : ''}
-                >
-                  {player.name}: {player.score}
-                </p>
-              ))}
-            </div>
+        <div className='fixed bottom-0 bg-gray-200 p-2 lg:p-6 lg:text-xl flex justify-between items-center w-full'>
+          <p>
+            Round: {currentRound}/{totalRounds}
+          </p>
+          <div className='flex space-x-4'>
+            {players.map((player, index) => (
+              <p
+                key={index}
+                className={index === targetPlayerIndex ? 'font-bold' : ''}
+              >
+                {player.name}: {player.score}
+              </p>
+            ))}
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

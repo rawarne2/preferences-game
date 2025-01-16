@@ -20,17 +20,17 @@ export const DropBox = ({ onDrop, number, card }: BoxProps) => {
     <div className='flex flex-col items-center'>
       <div
         ref={drop}
-        className={`relative flex items-center justify-center h-28 w-40 bg-gray-100 border-dashed border-4 rounded-md p-4 min-h-32 ${
+        className={`relative flex items-center justify-center h-28 w-40 bg-gray-100 border-dashed border-4 rounded-md ${
           isOver ? 'border-red-600' : 'border-gray-300'
         }`}
       >
         {card && (
-          <div className='absolute inset-0 flex items-center justify-center'>
+          <div className='absolute inset-3 flex items-center justify-center'>
             <DraggableCard card={card} />
           </div>
         )}
       </div>
-      <p className='mt-1 text-sm'>{number}</p>
+      <p className='mt-1 font-bold '>{number}</p>
     </div>
   );
 };

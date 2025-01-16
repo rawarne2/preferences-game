@@ -57,9 +57,11 @@ export const DragAndDropRanking = () => {
     setAvailableCards(updatedAvailableCards);
   };
 
+  const canSubmit = rankedCards.every((card) => card !== null);
+
   const handleSubmit = () => {
     // handle group prediction submit
-    if (rankedCards.every((card) => card !== null)) {
+    if (canSubmit) {
       console.log('Final Rankings:', rankedCards);
       if (gameState === 'targetRanking') {
         setTargetRankings(rankedCards);
@@ -77,14 +79,14 @@ export const DragAndDropRanking = () => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className='flex flex-col items-center p-4'>
-        <div className='flex space-x-4 mb-6'>
+      <div className='flex flex-col items-center lg:p-4 h-full'>
+        <div className='flex space-x-4 lg:space-x-12 lg:mb-6 mb-2'>
           {availableCards.map((card, index) => (
             <DraggableCard key={index} card={card} />
           ))}
         </div>
 
-        <div className='grid grid-cols-5 gap-4 mb-6'>
+        <div className='grid grid-cols-5 lg:gap-4 lg:mb-6 lg:mb-2 p-2'>
           {[1, 2, 3, 4, 5].map((number, index) => (
             <DropBox
               key={index}
@@ -97,7 +99,9 @@ export const DragAndDropRanking = () => {
 
         <button
           onClick={handleSubmit}
-          className='px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+          className={`px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 lg:visible ${
+            canSubmit ? 'visible' : 'invisible'
+          }`}
         >
           Submit Rankings
         </button>

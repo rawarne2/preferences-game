@@ -19,9 +19,7 @@ export const DraggableCard = ({ card }: { card: string }) => {
                   relative
                   border
                   rounded-lg
-                  p-4
                   mb-2
-                  w-36
                   text-center
                   cursor-pointer
                   bg-blue-50
@@ -35,8 +33,11 @@ export const DraggableCard = ({ card }: { card: string }) => {
                   items-center
                   justify-center
                   h-full
-                  min-h-28
-                  text-xl
+                  w-full
+                  min-h-28 md:min-h-24 sm:min-h-20
+                  min-w-28
+                  text-xl md:text-lg sm:text-base
+                  p-2
                   select-none ${
                     isDragging ? 'opacity-50 border-red-600 border-4' : ''
                   }`}

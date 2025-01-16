@@ -5,12 +5,12 @@ export const CardRankingScreen = () => {
   const { players, targetPlayerIndex, gameState } = useGameContext();
   const playerName = players[targetPlayerIndex].name;
   return (
-    <div className='flex flex-col items-center p-4'>
-      <h2 className='text-2xl font-bold mb-4'>
+    <div className='flex flex-col items-center lg:p-8 fixed'>
+      <h1 className='text-2xl font-bold mb-2'>
         {gameState === 'targetRanking'
           ? `${playerName}'s Turn to Rank`
           : 'Group Prediction'}
-      </h2>
+      </h1>
       <DragAndDropRanking />
     </div>
   );

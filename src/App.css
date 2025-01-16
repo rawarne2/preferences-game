@@ -1,42 +1,65 @@
+html, body {
+  overscroll-behavior-y: none;
+  width: 100vw;
+
+}
+
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  width: 100%;
+  height: 100vh;
+  overflow: visible;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+
+/* force landscape orientation for smaller screens */
+.force-landscape {
+  /* display: none; */
+  /* position: fixed; */
+  /* top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000; */
+  /* color: #fff; */
+  /* justify-content: center;
+  align-items: center;
+  text-align: center; */
+  /* z-index: 9999; */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* @media (orientation: portrait) {
+  body {
+    transform: rotate(90deg);
+    transform-origin: left top;
   }
-  to {
-    transform: rotate(360deg);
+} */
+/* .force-landscape {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  color: #fff;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 9999;
+} */
+
+/* @media (orientation: portrait) {
+  .force-landscape {
+    display: flex;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@media (orientation: landscape) {
+  .force-landscape {
+    display: none;
   }
-}
+} */
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}

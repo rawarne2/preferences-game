@@ -30,7 +30,7 @@ export const SetupScreen = () => {
     <div className='flex flex-col items-center space-y-6 p-4'>
       <h1 className='text-3xl font-bold'>Preferences</h1>
 
-      <div className='w-full max-w-md'>
+      <div className='w-full max-w-lg'>
         <div className='flex space-x-2'>
           <input
             type='text'
