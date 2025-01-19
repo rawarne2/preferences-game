@@ -39,7 +39,7 @@ export const SetupScreen = () => {
   };
 
   return (
-    <div className='flex flex-col items-center space-y-6 p-4'>
+    <div className='flex flex-col items-center space-y-6 p-8'>
       <h1 className='text-3xl font-bold'>Preferences</h1>
 
       <div className='w-full max-w-md'>
@@ -78,10 +78,11 @@ export const SetupScreen = () => {
           </ul>
         </div>
 
-        <h1>Card Game</h1>
+        <h1 className='mt-4'>Select Category:</h1>
         <select
           value={category ?? ''}
           onChange={(e) => handleCategoryChange(e.target.value as Category)}
+          className='bg-blue-500 text-white'
         >
           <option value='' disabled>
             Select a category
