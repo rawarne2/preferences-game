@@ -80,13 +80,13 @@ export const DragAndDropRanking = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className='flex flex-col items-center lg:p-4 h-full'>
-        <div className='flex space-x-4 lg:space-x-12 lg:mb-6 mb-2'>
+        <div className='grid grid-cols-5 lg:gap-4 lg:mb-2 lg:space-x-8 lg:mb-6 mb-2'>
           {availableCards.map((card, index) => (
             <DraggableCard key={index} card={card} />
           ))}
         </div>
 
-        <div className='grid grid-cols-5 lg:gap-4 lg:mb-6 lg:mb-2 p-2'>
+        <div className='grid grid-cols-5 lg:gap-4 lg:mb-2 p-2'>
           {[1, 2, 3, 4, 5].map((number, index) => (
             <DropBox
               key={index}

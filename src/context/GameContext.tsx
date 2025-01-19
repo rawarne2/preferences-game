@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import { Category } from './GameProvider';
 
 // Types
 export type GameState =
@@ -23,6 +24,8 @@ export type GameContextType = {
   groupPredictions: string[];
   setGroupPredictions: React.Dispatch<React.SetStateAction<string[]>>;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  setCategory: React.Dispatch<React.SetStateAction<Category>>;
+  category: Category;
   gameState: GameState;
   players: Player[];
   setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;

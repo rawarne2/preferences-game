@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { sampleDeck } from '../data/sampleDeck';
+import cardDecks from '../data/cardDecks.json';
 import { GameContext, GameContextType, GameState, Player } from './GameContext';
 
+export type Category = 'general' | 'adult' | 'dating' | 'pop-culture';
+
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
+  const [category, setCategory] = useState<Category>('general');
   const [gameState, setGameState] = useState<GameState>('setup');
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentRound, setCurrentRound] = useState(1);
@@ -11,7 +14,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentCards, setCurrentCards] = useState<string[]>([]);
   const [targetRankings, setTargetRankings] = useState<string[]>([]);
   const [groupPredictions, setGroupPredictions] = useState<string[]>([]);
-  const [cardDeck, setCardDeck] = useState<string[]>(sampleDeck);
+  const [cardDeck, setCardDeck] = useState<string[]>(cardDecks['general']);
 
   const handleResetGame = () => {
     setGameState('setup');
@@ -81,7 +84,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleStartGame = () => {
     if (players.length >= 2) {
-      const deckCopy = [...cardDeck];
+      const deck = cardDecks[category];
+      const deckCopy = [...deck];
       const shuffledDeck = shuffleArray(deckCopy);
       setCardDeck(shuffledDeck);
       setCurrentCards(shuffledDeck.slice(0, 5));
@@ -101,6 +105,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     groupPredictions,
     setGroupPredictions,
     setGameState,
+    setCategory,
+    category,
     gameState,
     players,
     setPlayers,

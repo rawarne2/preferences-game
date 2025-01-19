@@ -25,7 +25,7 @@ export const ReviewScreen = () => {
       <div className='grid lg:mb-6 grid-rows-2'>
         <div>
           <h2 className='font-bold mb-2 text-xl'>{playerName}'s Ranking: </h2>
-          <div className='grid grid-cols-5 lg:gap-4 gap-2 mb-6'>
+          <div className='grid grid-cols-5 lg:gap-4 gap-2 lg:mb-6 lg:min-h-36'>
             {targetRankings.map((card, index) => (
               <div
                 className={`group
@@ -49,6 +49,7 @@ export const ReviewScreen = () => {
                   h-full
                   w-full
                   p-2
+                  lg:p-4
                   min-h-28 md:min-h-24 sm:min-h-20
                   text-xl md:text-lg sm:text-base`}
                 key={index}
@@ -59,8 +60,9 @@ export const ReviewScreen = () => {
           </div>
         </div>
         <div>
-          <h2 className='font-bold mb-2 text-xl'>Predictions: </h2>{' '}
-          <div className='grid grid-cols-5 lg:gap-4 gap-2 lg:mb-6'>
+          <h2 className='font-bold my-2 text-xl'>Group Predictions: </h2>
+          <div className='grid grid-cols-5 lg:gap-4 gap-2 lg:mb-6 lg:min-h-36'>
+            {/* TODO: make cards component since it is being used here, target ranking, and group ranking */}
             {groupPredictions.map((card, index) => (
               <div className='flex flex-col items-center' key={index}>
                 <div
@@ -75,6 +77,16 @@ export const ReviewScreen = () => {
                   bg-blue-50
                   border-blue-800
                   shadow-blue-900
+                  ${
+                    diffsArray[index] === 0
+                      ? 'shadow-green-900'
+                      : 'shadow-red-900'
+                  }
+                  ${
+                    diffsArray[index] === 0
+                      ? 'border-green-900'
+                      : 'border-red-900'
+                  }
                   shadow-lg
                   transform
                   transition-all
@@ -85,12 +97,13 @@ export const ReviewScreen = () => {
                   h-full
                   w-full
                   p-2
+                  lg:p-4
                   min-h-28 md:min-h-24 sm:min-h-20
                   text-xl md:text-lg sm:text-base`}
                 >
                   {card}
                 </div>
-                <p className='text-sm'>Diff: {diffsArray[index]}</p>
+                <p className='text-lg'>Diff: {diffsArray[index]}</p>
               </div>
             ))}
           </div>

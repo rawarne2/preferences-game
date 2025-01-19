@@ -38,6 +38,7 @@ export const DraggableCard = ({ card }: { card: string }) => {
                   min-w-28
                   text-xl md:text-lg sm:text-base
                   p-2
+                  break-words
                   select-none ${
                     isDragging ? 'opacity-50 border-red-600 border-4' : ''
                   }`}

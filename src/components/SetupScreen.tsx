@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import { useGameContext } from '../context/GameContext';
+import { Category } from '../context/GameProvider';
 
 export const SetupScreen = () => {
   const [newPlayerName, setNewPlayerName] = useState('');
-  const { setTotalRounds, totalRounds, players, setPlayers, handleStartGame } =
-    useGameContext();
+  const {
+    setTotalRounds,
+    totalRounds,
+    players,
+    setPlayers,
+    handleStartGame,
+    setCategory,
+    category,
+  } = useGameContext();
   const handleNewPlayerNameChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -22,6 +30,10 @@ export const SetupScreen = () => {
     setTotalRounds(parseInt(e.target.value));
   };
 
+  const handleCategoryChange = (newCategory: Category) => {
+    setCategory(newCategory);
+  };
+
   const handleRemovePlayer = (index: number) => {
     setPlayers(players.filter((_, i) => i !== index));
   };
@@ -30,7 +42,7 @@ export const SetupScreen = () => {
     <div className='flex flex-col items-center space-y-6 p-4'>
       <h1 className='text-3xl font-bold'>Preferences</h1>
 
-      <div className='w-full max-w-lg'>
+      <div className='w-full max-w-md'>
         <div className='flex space-x-2'>
           <input
             type='text'
@@ -65,6 +77,20 @@ export const SetupScreen = () => {
             ))}
           </ul>
         </div>
+
+        <h1>Card Game</h1>
+        <select
+          value={category ?? ''}
+          onChange={(e) => handleCategoryChange(e.target.value as Category)}
+        >
+          <option value='' disabled>
+            Select a category
+          </option>
+          <option value='general'>General</option>
+          <option value='adult'>Adult</option>
+          <option value='pop-culture'>Pop Culture</option>
+          <option value='dating'>Dating</option>
+        </select>
 
         <div className='mt-6'>
           <label className='block text-sm font-medium mb-2'>
