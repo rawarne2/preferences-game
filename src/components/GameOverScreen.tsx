@@ -6,13 +6,15 @@ export const GameOverScreen = () => {
   const isTie = players.filter((p) => p.score === winner.score).length > 1;
 
   return (
-    <div className='flex flex-col items-center p-4'>
-      <h2 className='text-3xl font-bold lg:mb-6'>Game Over!</h2>
+    <div className='flex flex-col items-center p-4 lg:text-xl'>
+      <h2 className='lg:text-3xl text-2xl font-bold mb-6'>Game Over!</h2>
 
       {isTie ? (
-        <p className='text-xl lg:mb-4'>It's a tie!</p>
+        <p className='text-2xl lg:mb-4'>It's a tie!</p>
       ) : (
-        <p className='text-xl lg:mb-4'>Winner: {winner.name}!</p>
+        <p className='text-2xl mb-4 text-green-600 font-semibold'>
+          Winner: {winner.name}!
+        </p>
       )}
 
       <div className='w-full max-w-md'>
@@ -26,7 +28,7 @@ export const GameOverScreen = () => {
                 className='flex justify-between items-center p-2 bg-gray-100 rounded'
               >
                 <span>{player.name}</span>
-                <span>{player.score} points</span>
+                <span className='pl-4'>{player.score} points</span>
               </li>
             ))}
         </ul>

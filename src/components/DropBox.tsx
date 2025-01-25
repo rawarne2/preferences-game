@@ -17,10 +17,10 @@ export const DropBox = ({ onDrop, number, card }: BoxProps) => {
   });
 
   return (
-    <div className='flex flex-col items-center'>
+    <div className='flex md:flex-col items-center'>
       <div
         ref={drop}
-        className={`relative flex items-center justify-center h-28 w-40 bg-gray-100 border-dashed border-4 rounded-md ${
+        className={`relative flex items-center justify-center min-h-24 lg:h-36 min-w-32 lg:w-48 w-40 bg-gray-100 border-dashed border-4 rounded-md ${
           isOver ? 'border-red-600' : 'border-gray-300'
         }`}
       >
@@ -30,7 +30,7 @@ export const DropBox = ({ onDrop, number, card }: BoxProps) => {
           </div>
         )}
       </div>
-      <p className='mt-1 font-bold '>{number}</p>
+      <p className='md:mt-1 ml-2 text-xl font-bold '>{number}</p>
     </div>
   );
 };

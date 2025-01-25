@@ -4,8 +4,12 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useGameContext } from '../context/GameContext';
 import { DraggableCard } from './DraggableCard';
 import { DropBox } from './DropBox';
+import { TouchBackend } from 'react-dnd-touch-backend';
+import { usePreview } from 'react-dnd-preview';
+import { isMobile } from 'react-device-detect';
+import { ResetGameButton } from './ResetGameButton';
 
-// TODO: use https://react-dnd.github.io/react-dnd/docs/backends/touch for mobile
+const backend = isMobile ? TouchBackend : HTML5Backend;
 
 // Handles both the target's ranking and group's prediction
 export const DragAndDropRanking = () => {
@@ -21,6 +25,26 @@ export const DragAndDropRanking = () => {
   const [rankedCards, setRankedCards] = useState<(string | null)[]>(
     new Array(5).fill(null)
   );
+
+  const PreviewPicture = () => {
+    const preview = usePreview();
+    if (!preview.display || !isMobile) {
+      return null;
+    }
+    const { itemType, item, style, ref } = preview;
+    const currentCard = item as { card: string };
+    return (
+      <div
+        className='z-50'
+        style={style}
+        ref={(node) => (ref.current = node as HTMLDivElement | null)}
+        itemRef={String(item)}
+        typeof={itemType?.toString()}
+      >
+        <DraggableCard card={currentCard.card} />
+      </div>
+    );
+  };
 
   const handleDrop = (item: string, index: number) => {
     const newRankings = [...rankedCards];
@@ -78,34 +102,37 @@ export const DragAndDropRanking = () => {
   };
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className='flex flex-col items-center lg:p-4 h-full'>
-        <div className='grid grid-cols-5 lg:gap-4 lg:mb-2 lg:space-x-8 lg:mb-6 mb-2'>
-          {availableCards.map((card, index) => (
-            <DraggableCard key={index} card={card} />
-          ))}
-        </div>
+    <DndProvider backend={backend}>
+      <div className='lg:p-4'>
+        <div className='flex lg:flex-col items-center justify-center'>
+          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pr-2 md:px-0'>
+            {availableCards.map((card, index) => (
+              <DraggableCard key={index} card={card} />
+            ))}
+          </div>
 
-        <div className='grid grid-cols-5 lg:gap-4 lg:mb-2 p-2'>
-          {[1, 2, 3, 4, 5].map((number, index) => (
-            <DropBox
-              key={index}
-              onDrop={handleDrop}
-              number={number}
-              card={rankedCards[index]}
-            />
-          ))}
+          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pl-2 md:px-0'>
+            {[1, 2, 3, 4, 5].map((number, index) => (
+              <DropBox
+                key={index}
+                onDrop={handleDrop}
+                number={number}
+                card={rankedCards[index]}
+              />
+            ))}
+          </div>
         </div>
-
-        <button
-          onClick={handleSubmit}
-          className={`px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 lg:visible ${
-            canSubmit ? 'visible' : 'invisible'
-          }`}
-        >
-          Submit Rankings
-        </button>
+        <div className='flex flex-row mt-4 justify-center'>
+          <ResetGameButton />
+          <button
+            onClick={handleSubmit}
+            className={`px-12 mr-2 ml-8 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600`}
+          >
+            Submit Rankings
+          </button>
+        </div>
       </div>
+      <PreviewPicture />
     </DndProvider>
   );
 };

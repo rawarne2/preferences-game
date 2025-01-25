@@ -1,13 +1,18 @@
 html, body {
   overscroll-behavior-y: none;
   width: 100vw;
-  background: #e5e7eb;
+  background: #e6e6e6;
+  overflow: initial;
 }
 
 #root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 0 auto;
   text-align: center;
   width: 100%;
   height: 100vh;
-  overflow: visible;
+  position: fixed;
+  bottom: 0;
 }
