@@ -185,11 +185,13 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
   };
+
+  // Fisher-Yates (Knuth) Shuffle
   const shuffleArray = (array: string[]): string[] => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      const randomNum = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[randomNum]] = [shuffled[randomNum], shuffled[i]];
     }
     return shuffled;
   };
@@ -233,17 +235,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     handleStartGame,
     roundScore,
     isGameOver,
-    //
-    // category,
-    // gameState,
-    // players,
-    // currentRound,
-    // totalRounds,
-    // targetPlayerIndex,
-    // currentCards,
-    // targetRankings,
-    // groupPredictions,
-    // cardDeck,
     updateCategory,
     updateGameState,
     updatePlayers,
