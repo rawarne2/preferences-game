@@ -25,6 +25,7 @@ export const OnlinePlayerList: React.FC = () => {
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       withCredentials: true,
+      secure: true,
       extraHeaders: {
         'my-custom-header': 'abcd',
       },
