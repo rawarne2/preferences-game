@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { Player, useGameContext } from '../context/GameContext';
 
-const serverUrl = 'http://localhost:3001';
+// const serverUrl = 'http://localhost:3001';
+const serverUrl = 'http://192.168.4.22:3001';
 
 export const OnlinePlayerList: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -23,10 +24,20 @@ export const OnlinePlayerList: React.FC = () => {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
+      withCredentials: true,
+      extraHeaders: {
+        'my-custom-header': 'abcd',
+      },
+      transports: ['websocket'],
     });
+
+    if (newSocket.active) {
+      console.log('active socket! ', newSocket);
+    }
 
     // Set up socket listeners
     const handleConnect = () => {
+      console.log('trying to connect in handleConnect', newSocket);
       setSocket(newSocket);
       setIsConnecting(false);
     };
@@ -65,6 +76,9 @@ export const OnlinePlayerList: React.FC = () => {
     };
 
     // Attach listeners
+    newSocket.on('error', (error) => {
+      console.log('Connection error:', error);
+    });
     newSocket.on('connect', handleConnect);
     newSocket.on('disconnect', handleDisconnect);
     newSocket.on('roomCreated', handleRoomCreated);
