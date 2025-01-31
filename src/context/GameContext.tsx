@@ -10,6 +10,7 @@ export type GameState =
   | 'gameOver';
 
 export type Player = {
+  id: string;
   name: string;
   score: number;
 };

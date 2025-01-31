@@ -13,7 +13,7 @@ export const Footer = () => {
       </p>
       <div className='flex space-x-4'>
         {players.map((player, index) => (
-          <p
+          <div
             key={index}
             className={
               index === targetPlayerIndex
@@ -22,7 +22,7 @@ export const Footer = () => {
             }
           >
             {player.name}: {player.score}
-          </p>
+          </div>
         ))}
       </div>
     </div>

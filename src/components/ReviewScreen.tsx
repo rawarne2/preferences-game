@@ -21,7 +21,7 @@ export const ReviewScreen = () => {
   });
 
   return (
-    <div className='flex flex-col place-items-center lg:mt-8 lg:w-3/5 md:w-4/5 w-full top-0 fixed md:relative'>
+    <div className='flex flex-col place-items-center lg:mt-8 lg:w-4/5 md:w-4/5 w-full top-0 fixed md:relative'>
       <h1 className='lg:text-3xl text-2xl font-bold lg:mb-8'>Round Review</h1>
       <div className='flex md:flex-col flex-row '>
         <div className='md:mb-6 flex flex-col px-2'>
@@ -52,7 +52,7 @@ export const ReviewScreen = () => {
                   h-full
                   w-full
                   lg:min-h-28
-                  lg:min-w-40
+                  lg:min-w-36
                   min-h-20
                   md:text-xl
                   text-lg
@@ -110,7 +110,7 @@ export const ReviewScreen = () => {
                   h-full
                   w-full
                   lg:min-h-28
-                  lg:min-w-40
+                  lg:min-w-36
                   min-h-20
                   md:text-xl
                   text-lg
