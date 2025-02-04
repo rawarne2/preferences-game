@@ -2,9 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { Player, useGameContext } from '../context/GameContext';
 
-// const serverUrl = 'http://localhost:3001';
-const serverUrl = 'http://192.168.4.22:3001';
-
 export const OnlinePlayerList: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnecting, setIsConnecting] = useState(true);
@@ -16,7 +13,7 @@ export const OnlinePlayerList: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   const { players, setPlayers } = useGameContext();
-
+  const serverUrl = import.meta.env.VITE_WEBSOCKET_SERVER_URL;
   // Socket connection setup
   useEffect(() => {
     // Create socket connection
@@ -30,6 +27,7 @@ export const OnlinePlayerList: React.FC = () => {
         'my-custom-header': 'abcd',
       },
       transports: ['websocket'],
+      rejectUnauthorized: false,
     });
 
     if (newSocket.active) {
@@ -38,10 +36,10 @@ export const OnlinePlayerList: React.FC = () => {
 
     // Set up socket listeners
     const handleConnect = () => {
-      console.log('trying to connect in handleConnect', newSocket);
-      setSocket(newSocket);
+      console.log('connected to server!', newSocket);
       setIsConnecting(false);
     };
+    setSocket(newSocket);
 
     const handleDisconnect = () => {
       setIsConnecting(true);
@@ -72,12 +70,12 @@ export const OnlinePlayerList: React.FC = () => {
       setPlayers(updatedPlayers);
     };
 
-    const handleError = (errorMessage: string) => {
-      setError(errorMessage);
+    const handleError = (errorMessage: Error) => {
+      setError(String(errorMessage));
     };
 
     // Attach listeners
-    newSocket.on('error', (error) => {
+    newSocket.on('connect_error', (error) => {
       console.log('Connection error:', error);
     });
     newSocket.on('connect', handleConnect);
@@ -86,7 +84,7 @@ export const OnlinePlayerList: React.FC = () => {
     newSocket.on('roomJoined', handleRoomJoined);
     newSocket.on('playerJoined', handlePlayerJoined);
     newSocket.on('playerLeft', handlePlayerLeft);
-    newSocket.on('error', handleError);
+    newSocket.on('connect_error', handleError);
 
     // Cleanup function
     return () => {
@@ -97,7 +95,7 @@ export const OnlinePlayerList: React.FC = () => {
       newSocket.off('roomJoined', handleRoomJoined);
       newSocket.off('playerJoined', handlePlayerJoined);
       newSocket.off('playerLeft', handlePlayerLeft);
-      newSocket.off('error', handleError);
+      newSocket.off('connect_error', handleError);
 
       // Disconnect socket
       newSocket.disconnect();
