@@ -14,6 +14,8 @@ export const OnlinePlayerList: React.FC = () => {
 
   const { players, setPlayers } = useGameContext();
   const serverUrl = import.meta.env.VITE_WEBSOCKET_SERVER_URL;
+  const isProduction = import.meta.env.VITE_IS_PRODUCTION;
+
   // Socket connection setup
   useEffect(() => {
     // Create socket connection
@@ -23,11 +25,7 @@ export const OnlinePlayerList: React.FC = () => {
       reconnectionDelay: 1000,
       withCredentials: true,
       secure: true,
-      extraHeaders: {
-        'my-custom-header': 'abcd',
-      },
-      transports: ['websocket'],
-      rejectUnauthorized: false,
+      rejectUnauthorized: isProduction,
     });
 
     if (newSocket.active) {
