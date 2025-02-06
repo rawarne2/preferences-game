@@ -26,11 +26,8 @@ export const OnlinePlayerList: React.FC = () => {
       withCredentials: true,
       secure: true,
       rejectUnauthorized: isProduction,
+      transports: ['websocket'],
     });
-
-    if (newSocket.active) {
-      console.log('active socket! ', newSocket);
-    }
 
     // Set up socket listeners
     const handleConnect = () => {
