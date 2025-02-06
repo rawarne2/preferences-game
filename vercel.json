@@ -1,9 +1,9 @@
 {
     "rewrites": [
-      {
-        "source": "/api",
-        "destination": "http://preferences-eb.eba-vjztfdmp.us-east-2.elasticbeanstalk.com/"
-      }
+        {
+            "source": "/socket.io/:path*",
+            "destination": "http://preferences-eb.eba-vjztfdmp.us-east-2.elasticbeanstalk.com/socket.io/:path*"
+          }
     ]
   }
   
