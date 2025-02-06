@@ -13,13 +13,13 @@ export const OnlinePlayerList: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   const { players, setPlayers } = useGameContext();
-  const serverUrl = import.meta.env.VITE_WEBSOCKET_SERVER_URL;
+  // const serverUrl = import.meta.env.VITE_WEBSOCKET_SERVER_URL;
   const isProduction = import.meta.env.VITE_IS_PRODUCTION;
 
   // Socket connection setup
   useEffect(() => {
     // Create socket connection
-    const newSocket = io(serverUrl, {
+    const newSocket = io('https://preferences-game.vercel.app/api', {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
