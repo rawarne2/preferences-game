@@ -19,7 +19,7 @@ export const OnlinePlayerList: React.FC = () => {
   // Socket connection setup
   useEffect(() => {
     // Create socket connection
-    const newSocket = io('https://preferences-game.vercel.app/api', {
+    const newSocket = io('wss://preferences-game.vercel.app', {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
@@ -27,6 +27,7 @@ export const OnlinePlayerList: React.FC = () => {
       secure: true,
       rejectUnauthorized: isProduction,
       transports: ['websocket'],
+      path: '/api',
     });
 
     // Set up socket listeners
