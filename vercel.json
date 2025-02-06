@@ -1,8 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "/api/:path*",
-        "destination": "http://preferences-eb.eba-vjztfdmp.us-east-2.elasticbeanstalk.com/:path*"
+        "source": "/api",
+        "destination": "http://preferences-eb.eba-vjztfdmp.us-east-2.elasticbeanstalk.com/"
       }
     ]
   }
