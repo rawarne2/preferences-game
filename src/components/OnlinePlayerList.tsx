@@ -95,7 +95,7 @@ export const OnlinePlayerList: React.FC = () => {
       // Disconnect socket
       newSocket.disconnect();
     };
-  }, [serverUrl]);
+  }, []);
 
   // Handle room creation
   const handleCreateRoom = useCallback(() => {
