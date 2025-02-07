@@ -13,21 +13,19 @@ export const OnlinePlayerList: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   const { players, setPlayers } = useGameContext();
-  // const serverUrl = import.meta.env.VITE_WEBSOCKET_SERVER_URL;
-  // const isProduction = import.meta.env.VITE_IS_PRODUCTION;
+  const serverUrl = import.meta.env.VITE_WEBSOCKET_SERVER_URL;
+  const isProduction = import.meta.env.VITE_IS_PRODUCTION;
 
   // Socket connection setup
   useEffect(() => {
     // Create socket connection
-    const newSocket = io('wss://preferences-game.vercel.app', {
+    const newSocket = io(serverUrl, {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
       withCredentials: true,
       secure: true,
-      rejectUnauthorized: true,
-      transports: ['websocket'],
-      path: '/socket.io/',
+      rejectUnauthorized: isProduction,
     });
 
     // Set up socket listeners
@@ -96,7 +94,7 @@ export const OnlinePlayerList: React.FC = () => {
       // Disconnect socket
       newSocket.disconnect();
     };
-  }, []);
+  }, [serverUrl]);
 
   // Handle room creation
   const handleCreateRoom = useCallback(() => {
