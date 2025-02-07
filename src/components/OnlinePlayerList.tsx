@@ -26,6 +26,7 @@ export const OnlinePlayerList: React.FC = () => {
       withCredentials: true,
       secure: true,
       rejectUnauthorized: isProduction,
+      transports: ['websocket'],
     });
 
     // Set up socket listeners
