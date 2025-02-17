@@ -23,11 +23,12 @@ export const OnlinePlayerList: React.FC = () => {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
-      withCredentials: true,
-      secure: true,
+      withCredentials: isProduction,
+      secure: isProduction,
       rejectUnauthorized: isProduction,
       transports: ['websocket'],
       port: port,
+      path: '/socket.io/',
     });
 
     // Set up socket listeners
