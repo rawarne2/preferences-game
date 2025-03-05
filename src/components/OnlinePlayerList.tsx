@@ -21,14 +21,12 @@ export const OnlinePlayerList: React.FC = () => {
     // Create socket connection
     const newSocket = io(serverUrl, {
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      reconnectionAttempts: 3,
       withCredentials: isProduction,
       secure: isProduction,
       rejectUnauthorized: isProduction,
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       port: port,
-      path: '/socket.io/',
     });
 
     // Set up socket listeners
@@ -72,8 +70,8 @@ export const OnlinePlayerList: React.FC = () => {
     };
 
     // Attach listeners
-    newSocket.on('connect_error', (error) => {
-      console.log('Connection error:', error);
+    newSocket.on('connect_error', (err) => {
+      console.log('Connection error: ', err);
     });
     newSocket.on('connect', handleConnect);
     newSocket.on('disconnect', handleDisconnect);
