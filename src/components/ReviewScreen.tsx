@@ -21,8 +21,8 @@ export const ReviewScreen = () => {
   });
 
   return (
-    <div className='flex flex-col place-items-center lg:mt-8 lg:w-4/5 md:w-4/5 w-full top-0 fixed md:relative'>
-      <h1 className='lg:text-3xl text-2xl font-bold lg:mb-8'>Round Review</h1>
+    <div className='flex flex-col place-items-center lg:mt-2 lg:w-4/5 md:w-4/5 w-full top-0 fixed md:relative'>
+      <h1 className='lg:text-3xl text-2xl font-bold'>Round Review</h1>
       <div className='flex md:flex-col flex-row '>
         <div className='md:mb-6 flex flex-col px-2'>
           <h2 className='font-semibold mb-2 text-xl underline underline-offset-4'>
@@ -80,10 +80,12 @@ export const ReviewScreen = () => {
                     className={`inline-flex items-center rounded-md bg-red-50 px-2 py-1 mr-2 font-medium ring-1 ring-inset ${
                       diffsArray[index] === 0
                         ? 'text-green-600 ring-green-600'
+                        : diffsArray[index] < 3
+                        ? 'text-yellow-600 ring-yellow-600'
                         : 'text-red-600 ring-red-600'
                     }`}
                   >
-                    {diffsArray[index]}
+                    {4 - diffsArray[index]}
                   </span>
                 )}
                 <div
@@ -98,6 +100,8 @@ export const ReviewScreen = () => {
                   ${
                     diffsArray[index] === 0
                       ? 'shadow-green-900 bg-green-50 border-green-600'
+                      : diffsArray[index] < 3
+                      ? 'shadow-yellow-900 bg-yellow-50 border-yellow-600'
                       : 'shadow-red-900 bg-red-50 border-red-600'
                   }
                   shadow-lg
@@ -122,7 +126,8 @@ export const ReviewScreen = () => {
                 </div>
                 {!isMobile && (
                   <p className='text-xl font-semibold pt-2'>
-                    Diff: {diffsArray[index]}
+                    {diffsArray[index] > 0 ? '-' : ''}
+                    {diffsArray[index]}
                   </p>
                 )}
               </div>
@@ -131,9 +136,9 @@ export const ReviewScreen = () => {
         </div>
       </div>
 
-      <div className='flex md:flex-col items-center pt-6'>
+      <div className='flex md:flex-col items-center pt-4'>
         <p className='text-2xl md:my-4 font-semibold pr-12 md:pr-0 underline underline-offset-4'>
-          Round Score: {roundScore}
+          Round Score: {roundScore}/20
         </p>
         <button
           onClick={handleUpdateScore}

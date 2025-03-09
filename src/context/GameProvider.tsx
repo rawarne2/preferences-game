@@ -139,10 +139,10 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const calculateRoundScore = () => {
-    let total = 0;
+    let total = 20;
     targetRankings.forEach((cardText, index) => {
       const predictionIndex = groupPredictions.indexOf(cardText);
-      total += Math.abs(predictionIndex - index);
+      total -= Math.abs(predictionIndex - index);
     });
     return total;
   };

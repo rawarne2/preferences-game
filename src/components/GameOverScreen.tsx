@@ -2,7 +2,7 @@ import { useGameContext } from '../context/GameContext';
 
 export const GameOverScreen = () => {
   const { players, handleResetGame } = useGameContext();
-  const winner = [...players].sort((a, b) => a.score - b.score)[0];
+  const winner = [...players].sort((a, b) => b.score - a.score)[0];
   const isTie = players.filter((p) => p.score === winner.score).length > 1;
 
   return (
@@ -21,7 +21,7 @@ export const GameOverScreen = () => {
         <h3 className='text-xl font-semibold mb-2'>Final Scores:</h3>
         <ul className='space-y-2'>
           {[...players]
-            .sort((a, b) => a.score - b.score)
+            .sort((a, b) => b.score - a.score)
             .map((player, index) => (
               <li
                 key={index}
