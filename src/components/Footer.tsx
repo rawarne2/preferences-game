@@ -7,10 +7,10 @@ export const Footer = () => {
     return null;
   }
   return (
-    <div className='fixed bottom-0 bg-gray-300 px-1 md:p-2 lg:p-6 lg:text-xl flex justify-between items-center w-full overflow-scroll'>
+    <div className='fixed bottom-0 bg-gray-300 px-1 md:p-2 lg:p-3 text-sm font-medium lg:text-xl flex justify-between items-center w-full overflow-scroll'>
       <p className='font-bold pr-2'>
         Round: {currentRound}/{totalRounds}
-      </p>
+      </p >
       <div className='flex space-x-4'>
         {players.map((player, index) => (
           <div
@@ -21,10 +21,10 @@ export const Footer = () => {
                 : ''
             }
           >
-            {player.name}: {player.score}
+            {player.name}: {player.score || 0}
           </div>
         ))}
       </div>
-    </div>
+    </div >
   );
 };

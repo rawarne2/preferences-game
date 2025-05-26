@@ -4,22 +4,20 @@ import { ReviewScreen } from './ReviewScreen';
 import { GameOverScreen } from './GameOverScreen';
 import { useGameContext } from '../context/GameContext';
 import { CardRankingScreen } from './CardRankingScreen';
-import { Footer } from './Footer';
 
 const PreferencesGame: React.FC = () => {
   const { gameState } = useGameContext();
 
   // Render the appropriate screen based on game state
   return (
-    <>
+    <div className='flex flex-col w-full h-full'>
       {gameState === 'setup' && <SetupScreen />}
-      {(gameState === 'targetRanking' || gameState === 'groupPrediction') && (
+      {(gameState === 'targetRanking' || gameState === 'groupPrediction' || gameState === 'waitingForRankings') && (
         <CardRankingScreen />
       )}
       {gameState === 'review' && <ReviewScreen />}
       {gameState === 'gameOver' && <GameOverScreen />}
-      {gameState !== 'setup' && gameState !== 'gameOver' && <Footer />}
-    </>
+    </div>
   );
 };
 

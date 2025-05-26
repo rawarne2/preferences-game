@@ -1,30 +1,15 @@
-import { useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useGameContext } from '../context/GameContext';
 import { DraggableCard } from './DraggableCard';
 import { DropBox } from './DropBox';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { usePreview } from 'react-dnd-preview';
 import { isMobile } from 'react-device-detect';
-import { ResetGameButton } from './ResetGameButton';
 
 const backend = isMobile ? TouchBackend : HTML5Backend;
 
 // Handles both the target's ranking and group's prediction
-export const DragAndDropRanking = () => {
-  const {
-    setTargetRankings,
-    setGameState,
-    setGroupPredictions,
-    gameState,
-    currentCards,
-  } = useGameContext();
-
-  const [availableCards, setAvailableCards] = useState<string[]>(currentCards);
-  const [rankedCards, setRankedCards] = useState<(string | null)[]>(
-    new Array(5).fill(null)
-  );
+export const DragAndDropRanking = ({ availableCards, rankedCards, setRankedCards, setAvailableCards }: { availableCards: string[], rankedCards: (string | null)[], setRankedCards: (cards: (string | null)[]) => void, setAvailableCards: (cards: string[]) => void }) => {
 
   const PreviewPicture = () => {
     const preview = usePreview();
@@ -81,55 +66,30 @@ export const DragAndDropRanking = () => {
     setAvailableCards(updatedAvailableCards);
   };
 
-  const canSubmit = rankedCards.every((card) => card !== null);
-
-  const handleSubmit = () => {
-    // handle group prediction submit
-    if (canSubmit) {
-      console.log('Final Rankings:', rankedCards);
-      if (gameState === 'targetRanking') {
-        setTargetRankings(rankedCards);
-        setGameState('groupPrediction');
-        setAvailableCards(currentCards);
-        setRankedCards(new Array(5).fill(null));
-      } else if (gameState === 'groupPrediction') {
-        setGroupPredictions(rankedCards);
-        setGameState('review');
-      }
-    } else {
-      alert('Please rank all the cards.');
-    }
-  };
-
   return (
     <DndProvider backend={backend}>
-      <div className='lg:p-4'>
+      <div className='lg:p-4 w-full'>
         <div className='flex lg:flex-col items-center justify-center'>
-          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pr-2 md:px-0'>
+          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pr-2'>
             {availableCards.map((card, index) => (
               <DraggableCard key={index} card={card} />
             ))}
           </div>
 
-          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pl-2 md:px-0'>
+          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pl-2'>
             {[1, 2, 3, 4, 5].map((number, index) => (
-              <DropBox
-                key={index}
-                onDrop={handleDrop}
-                number={number}
-                card={rankedCards[index]}
-              />
+              <div key={index} className='flex lg:flex-col justify-center items-center'>
+                <DropBox
+                  key={index}
+                  onDrop={handleDrop}
+                  number={number}
+                  card={rankedCards[index]}
+                />
+                {rankedCards[index] && <p className='lg:hidden md:mt-1 ml-2 text-xl font-bold '>{number}</p>}
+                <p className='hidden lg:block md:mt-1 ml-2 text-xl font-bold '>{number}</p>
+              </div>
             ))}
           </div>
-        </div>
-        <div className='flex flex-row mt-4 justify-center'>
-          <ResetGameButton />
-          <button
-            onClick={handleSubmit}
-            className={`px-12 mr-2 ml-8 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600`}
-          >
-            Submit Rankings
-          </button>
         </div>
       </div>
       <PreviewPicture />

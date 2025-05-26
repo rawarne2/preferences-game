@@ -1,19 +1,52 @@
 import { createContext, useContext } from 'react';
-import { Category } from './GameProvider';
+import { Socket } from 'socket.io-client';
 
 // Types
 export type GameState =
   | 'setup'
   | 'targetRanking'
+  | 'waitingForRankings'
   | 'groupPrediction'
   | 'review'
   | 'gameOver';
 
-export type Player = {
-  id: string;
+export type Category = 'general' | 'adult' | 'dating' | 'pop-culture';
+
+export interface Player {
+  userId: string;
   name: string;
   score: number;
+  rankings?: string[]; // online only. Rankings of target player's cards
+  isHost?: boolean; //  online only. When a player is the host of a game room, this is set to true.
+  isOnline?: boolean; //  online only. When a player joins or creates a game room, this is set to true
+  isConnected?: boolean; //  online only. When a player disconnects, this is set to false
 };
+
+export type RoomData = { // will change
+  code: string;
+  players: Player[];
+};
+
+export enum GameModes {
+  SINGLE_DEVICE = 'SINGLE_DEVICE',
+  ONLINE = 'ONLINE',
+}
+
+export interface Game {
+  currentRound?: number;
+  totalRounds?: number;
+  targetPlayerIndex?: number;
+  currentCards?: string[];
+  targetRankings?: string[];
+  groupPredictions?: string[];
+}
+
+export interface GameRoom {
+  code: string;
+  players?: Player[];
+  host?: string;
+  game?: Game;
+}
 
 export type GameContextType = {
   currentCards: string[];
@@ -25,11 +58,15 @@ export type GameContextType = {
   groupPredictions: string[];
   setGroupPredictions: React.Dispatch<React.SetStateAction<string[]>>;
   setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  gameMode: GameModes;
+  setGameMode: React.Dispatch<React.SetStateAction<GameModes>>;
   setCategory: React.Dispatch<React.SetStateAction<Category>>;
   category: Category;
   gameState: GameState;
   players: Player[];
   setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
+  onlineUserId: string;
+  setOnlineUserId: React.Dispatch<React.SetStateAction<string>>;
   totalRounds: number;
   setTotalRounds: React.Dispatch<React.SetStateAction<number>>;
   currentRound: number;
@@ -41,6 +78,16 @@ export type GameContextType = {
   handleStartGame: () => void;
   roundScore: number;
   isGameOver: boolean;
+  socket: Socket | null;
+  setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
+  roomCode: string;
+  setRoomCode: (roomCode: string) => void;
+  isConnecting: boolean;
+  setIsConnecting: (isConnecting: boolean) => void;
+  error: string;
+  setError: (error: string) => void;
+  mode: 'select' | 'create' | 'join' | 'ready';
+  setMode: (mode: 'select' | 'create' | 'join' | 'ready') => void;
 };
 
 // Context
