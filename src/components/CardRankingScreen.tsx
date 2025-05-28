@@ -8,7 +8,7 @@ export const CardRankingScreen = () => {
   const { players, targetPlayerIndex, gameState, gameMode, onlineUserId, currentCards, setTargetRankings, setGameState, setGroupPredictions, setPlayers, socket, roomCode } = useGameContext();
 
   const [availableCards, setAvailableCards] = useState<string[]>(currentCards);
-  const [rankedCards, setRankedCards] = useState<(string | null)[]>(  // TODO: use the current cards instead of new Array(5).fill(null)???
+  const [rankedCards, setRankedCards] = useState<(string | null)[]>(
     new Array(5).fill(null)
   );
 
@@ -45,7 +45,6 @@ export const CardRankingScreen = () => {
   };
 
   const targetPlayerName = players[targetPlayerIndex].name;
-  // TODO: change this to use the onlineUserId
   const currentPlayer = onlineUserId
     ? players.find((player) => player.userId === onlineUserId)
     : players[targetPlayerIndex];
@@ -54,30 +53,28 @@ export const CardRankingScreen = () => {
   console.log('onlineUserId', onlineUserId, players);
 
   return (
-    <div className='flex flex-col lg:text-xl w-full h-full items-center justify-center'>
-      <div className='fixed top-0'>
-        <h1 className='lg:text-3xl text-2xl font-bold md:my-6 my-4'>
-          {
-            gameState === 'targetRanking'
-              ? `${targetPlayerName}'s Turn to Rank`
-              : gameMode === GameModes.SINGLE_DEVICE
-                ? `Group Prediction`
-                : `${currentPlayer?.name}'s turn to guess ${targetPlayerName}'s Rank`
-          }
-        </h1>
-        {gameState === 'waitingForRankings' && (
-          <div>
-            <h3>Waiting for rankings...</h3>
-          </div>
-        )}
-      </div>
-      <div className='fixed bottom-auto overflow-y-visible pb-8'>
+    <div className='flex flex-col lg:text-xl w-full items-center h-[calc(100%-2em)]'>
+      <h1 className='lg:text-3xl text-2xl font-bold lg:my-16 md:my-6'>
+        {
+          gameState === 'targetRanking'
+            ? `${targetPlayerName}'s Turn to Rank`
+            : gameMode === GameModes.SINGLE_DEVICE
+              ? `Group Prediction`
+              : `${currentPlayer?.name}'s turn to guess ${targetPlayerName}'s Rank`
+        }
+      </h1>
+      {gameState === 'waitingForRankings' && (
+        <div>
+          <h3>Waiting for rankings...</h3>
+        </div>
+      )}
+      <div className='p-4 lg:h-4/5'>
         <DragAndDropRanking availableCards={availableCards} rankedCards={rankedCards} setRankedCards={setRankedCards} setAvailableCards={setAvailableCards} />
-        <div className='flex flex-row my-4 md:my-6 lg:my-8 justify-center '>
+        <div className='flex flex-row mt-2 md:my-6 lg:my-8 justify-center'>
           <ResetGameButton />
           <button
             onClick={handleSubmitRankings}
-            className={`px-12 mr-2 ml-8 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600`}
+            className={`px-10 py-1 max-h-12 ml-6 bg-green-600 text-white font-semibold rounded hover:bg-green-700 border-2 border-green-800`}
           >
             Submit Ranking
           </button>

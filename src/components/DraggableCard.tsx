@@ -16,10 +16,11 @@ export const DraggableCard = ({ card }: { card: string }) => {
       ref={drag}
       className={`
         flex relative items-center justify-center
-        w-44 h-[5.5rem] md:h-[5.5rem] md:w-52 lg:min-h-28 lg:min-w-40
+        w-[40vw] md:w-[30vw] max-w-52 lg:w-[15vw] h-[12vh] md:h-[13vh]
         p-1 md:p-2 lg:p-4
         mb-2 md:mb-3 lg:mb-4
         text-lg md:text-xl
+        leading-tight
         text-center break-words select-none
         cursor-pointer
         border rounded-lg

@@ -386,11 +386,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       setCardDeck(shuffledDeckSlice);
       const currentCards = shuffledDeckSlice.slice(0, 5)
       setCurrentCards(currentCards);
-
-      // starts the game
-
-      // emit start-game to the room
-      console.log('gameState', gameState, gameMode);
       if (gameMode === GameModes.ONLINE) {
         socket?.emit('start-game', roomCode, totalRounds, currentCards);
       } else {

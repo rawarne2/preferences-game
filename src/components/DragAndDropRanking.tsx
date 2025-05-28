@@ -68,28 +68,26 @@ export const DragAndDropRanking = ({ availableCards, rankedCards, setRankedCards
 
   return (
     <DndProvider backend={backend}>
-      <div className='lg:p-4 w-full'>
-        <div className='flex lg:flex-col items-center justify-center'>
-          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pr-2'>
-            {availableCards.map((card, index) => (
-              <DraggableCard key={index} card={card} />
-            ))}
-          </div>
+      <div className='lg:p-4 w-full flex lg:flex-col items-center justify-center'>
+        <div className='flex flex-col justify-evenly lg:grid lg:grid-cols-5 lg:gap-4 lg:mb-4 pr-2 lg:pr-0'>
+          {availableCards.map((card, index) => (
+            <DraggableCard key={index} card={card} />
+          ))}
+        </div>
 
-          <div className='lg:grid grid-cols-5 lg:gap-4 lg:mb-6 pl-2'>
-            {[1, 2, 3, 4, 5].map((number, index) => (
-              <div key={index} className='flex lg:flex-col justify-center items-center'>
-                <DropBox
-                  key={index}
-                  onDrop={handleDrop}
-                  number={number}
-                  card={rankedCards[index]}
-                />
-                {rankedCards[index] && <p className='lg:hidden md:mt-1 ml-2 text-xl font-bold '>{number}</p>}
-                <p className='hidden lg:block md:mt-1 ml-2 text-xl font-bold '>{number}</p>
-              </div>
-            ))}
-          </div>
+        <div className='flex flex-col justify-evenly lg:grid grid-cols-5 lg:gap-4 pl-2 lg:pl-0'>
+          {[1, 2, 3, 4, 5].map((number, index) => (
+            <div key={index} className='flex lg:flex-col items-center'>
+              <DropBox
+                key={index}
+                onDrop={handleDrop}
+                number={number}
+                card={rankedCards[index]}
+              />
+              {rankedCards[index] && <p className='lg:hidden md:mt-1 ml-2 text-xl font-bold '>{number}</p>}
+              <p className='hidden lg:block md:mt-1 ml-2 text-xl font-bold '>{number}</p>
+            </div>
+          ))}
         </div>
       </div>
       <PreviewPicture />

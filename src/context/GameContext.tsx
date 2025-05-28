@@ -10,7 +10,7 @@ export type GameState =
   | 'review'
   | 'gameOver';
 
-export type Category = 'general' | 'adult' | 'dating' | 'pop-culture';
+export type Category = 'general' | 'adult' | 'dating' | 'culture';
 
 export interface Player {
   userId: string;
