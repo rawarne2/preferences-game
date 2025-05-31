@@ -16,9 +16,6 @@ export const OnlinePlayerList: React.FC = () => {
   const handleCreateRoom = useCallback(() => {
     if (socket && socket.connected) {
       socket.emit('create-room');
-      // setMode here???
-      // set isHost = true on the player
-      // 
     }
   }, [socket]);
 
@@ -29,7 +26,6 @@ export const OnlinePlayerList: React.FC = () => {
       return;
     }
 
-    console.log('handleJoinRoom newId', newId, name, inputCode, socket && socket.connected);
     if (socket && socket.connected && inputCode.length === 10 && name.trim()) {
       socket.emit('join-room', { roomCode: inputCode, userId: newId, name: name.trim() });
       setRoomCode(inputCode);
@@ -39,17 +35,15 @@ export const OnlinePlayerList: React.FC = () => {
       setError('');
     } else if (!name.trim()) {
       setError('Please enter your name');
-    } else if (inputCode.length !== 10) { // or if the room code is not found
+    } else if (inputCode.length !== 10) {
       setError('Invalid room code');
     } else {
-      console.log('handleJoinRoom stuck..........')
       setError('Please enter your name and room code');
     }
   }, [socket, inputCode, name, onlineUserId]);
 
   const handleNameSubmit = useCallback(
     () => {
-      // e.preventDefault();
       if (
         socket &&
         socket.connected &&
@@ -61,12 +55,9 @@ export const OnlinePlayerList: React.FC = () => {
           name: name.trim(),
           userId: newId,
         });
-        console.log('handleNameSubmit newId', newId, name, roomCode);
 
-        // Set these states immediately for better user experience
         setIsNameSubmitted(true);
         setOnlineUserId(newId);
-        // The mode will be confirmed in the handleRoomJoined event handler
       } else if (!name.trim()) {
         setError('Please enter your name');
       }
@@ -207,7 +198,6 @@ export const OnlinePlayerList: React.FC = () => {
                   type="submit"
                   className='mt-2 w-full py-3 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
                   disabled={!name.trim()}
-                // onClick={handleNameSubmit}
                 >
                   Create Game
                 </button>

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import cardDecks from '../data/cardDecks.json'; // TODO: needs optimization
-import { Category, GameContext, GameModes, GameRoom, GameState, Player, RoomData } from './GameContext';
+import { Category, GameContext, GameModes, GameRoom, GameState, Player } from './GameContext';
 import { io, Socket } from 'socket.io-client';
 
 // TODO: use all callbacks instead of useState functions directly. useState functions shouldn't even be exported.
@@ -53,8 +53,21 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     onlineUserIdRef.current = onlineUserId;
   }, [onlineUserId]);
 
+  const [gameRoom, setGameRoom] = useState<GameRoom>(() => {
+    const saved = localStorage.getItem('gameRoom');
+    return saved ? JSON.parse(saved) : {
+      game: {
+        currentRound: 1,
+        totalRounds: 5,
+        targetPlayerIndex: 0,
+      }
+    };
+  });
+
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [roomCode, setRoomCode] = useState<string>(''); // move to context and change to gameRoom
+  const [roomCode, setRoomCode] = useState<string>(() => {
+    return localStorage.getItem('roomCode') || '';
+  });
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string>('');
   const [mode, setMode] = useState<'select' | 'create' | 'join' | 'ready'>('select');
@@ -66,6 +79,13 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   // Persist state to localStorage on change
   useEffect(() => {
     localStorage.setItem('category', category);
+  }, [category]);
+
+  useEffect(() => {
+    const deck = cardDecks[category];
+    const deckCopy = [...deck];
+    const shuffledDeck = shuffleCards(deckCopy);
+    setCardDeck(shuffledDeck);
   }, [category]);
 
   useEffect(() => {
@@ -109,6 +129,20 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   }, [onlineUserId]);
 
   useEffect(() => {
+    localStorage.setItem('gameRoom', JSON.stringify(gameRoom));
+  }, [gameRoom]);
+
+  useEffect(() => {
+    localStorage.setItem('roomCode', roomCode || '');
+  }, [roomCode]);
+
+  useEffect(() => {
+    if (currentRound > totalRounds) {
+      setGameState('gameOver');
+    }
+  }, [currentRound, totalRounds]);
+
+  useEffect(() => {
     // Create socket connection
     const newSocket = io(serverUrl, {
       reconnection: true,
@@ -122,7 +156,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Set up socket listeners
     const handleConnect = () => {
-      // console.log('connected to server!', newSocket);
       setIsConnecting(false);
     };
     setSocket(newSocket);
@@ -140,28 +173,29 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       setError('');
     };
 
-    const handleRoomJoined = (roomData: RoomData) => {
-      console.log('room joined', roomData);
-      if (roomData.code !== roomCode) setRoomCode(roomData.code);
-      if (roomData.players.length !== players.length) setPlayers(roomData.players);
-      setMode('ready');
-    };
 
     const handlePlayerJoined = (updatedPlayers: Player[]) => {
       console.log('player joined', updatedPlayers);
       setPlayers(updatedPlayers);
+      setGameRoom({
+        ...gameRoom,
+        players: updatedPlayers
+      });
     };
 
     const handlePlayerLeft = (updatedPlayers: Player[]) => {
       console.log('player left', updatedPlayers);
       setPlayers(updatedPlayers);
+      setGameRoom({
+        ...gameRoom,
+        players: updatedPlayers
+      });
     };
 
     const handleError = (errorMessage: Error) => {
-      console.log('error', errorMessage);
+      console.error('error', errorMessage);
       setError(String(errorMessage));
     };
-    console.log('gameState', gameState);
     const handleOnlineGameStarted = (gameRoom: GameRoom) => {
       // Use the ref to access the current onlineUserId value
       const currentOnlineUserId = onlineUserIdRef.current;
@@ -174,7 +208,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('gameRoom not found');
         return;
       }
-      console.log('game started>>>>', gameRoom, currentOnlineUserId);
+
+      // Store the entire gameRoom object as the data source
+      setGameRoom(gameRoom);
 
       if (gameRoom.game?.targetPlayerIndex !== undefined &&
         gameRoom.players?.[gameRoom.game.targetPlayerIndex]?.userId === currentOnlineUserId) {
@@ -183,30 +219,37 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         setGameState('groupPrediction');
       }
 
+      // Update individual state from gameRoom for backward compatibility
       setCurrentCards(gameRoom?.game?.currentCards || []);
       setCurrentRound(gameRoom?.game?.currentRound || 1);
       setTargetPlayerIndex(gameRoom?.game?.targetPlayerIndex || 0);
       setTotalRounds(gameRoom?.game?.totalRounds || 5);
+      setPlayers(gameRoom?.players || []);
     };
 
-    const handleRankingsSubmitted = (gameRoom: GameRoom) => {
-      console.log('online rankings submitted', gameRoom);
-      // if the current user submitted target rankings, set the gameState to 'waitingForRankings'
-      if (gameState === 'waitingForRankings') {
-        // const playerIndex = players.findIndex(player => player.userId === onlineUserIdRef.current);
-        // if (playerIndex !== -1) {
-        //   const updatedPlayers = [...players];
-        //   updatedPlayers[playerIndex].rankings = gameRoom.game?.targetRankings || [];
-        //   setPlayers(updatedPlayers);
-        // }
-        if (gameState === 'waitingForRankings') {
-          if (gameRoom.game?.targetRankings?.length === 5 && gameRoom.game?.groupPredictions?.length === players.length) {
-            setGameState('review');
-            setTargetRankings(gameRoom.game?.targetRankings);
-            setPlayers(gameRoom?.players || []);
-          }
-        }
+    const handleIncrementTurn = (gameRoom: GameRoom) => {
+      console.log('increment round', gameRoom);
+      setGameRoom(gameRoom);
+      setCurrentCards(gameRoom.game.currentCards);
+      setCurrentRound(gameRoom.game.currentRound);
+      setTargetPlayerIndex(gameRoom.game.targetPlayerIndex);
+      setPlayers(gameRoom.players);
+      setTargetRankings([]);
+      setGroupPredictions([]);
+
+      if (gameRoom.game?.targetPlayerIndex !== undefined &&
+        gameRoom.players?.[gameRoom.game.targetPlayerIndex]?.userId === onlineUserIdRef.current) {
+        setGameState('targetRanking');
+      } else {
+        setGameState('groupPrediction');
       }
+    };
+
+
+    const handleRankingsSubmitted = (gameRoom: GameRoom) => {
+      setGameRoom(gameRoom);
+      setTargetRankings(gameRoom.game?.targetRankings);
+      setPlayers(gameRoom?.players);
     };
 
     const handleScoreUpdated = (score: number) => {
@@ -229,10 +272,10 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     newSocket.on('connect', handleConnect);
     newSocket.on('disconnect', handleDisconnect);
     newSocket.on('room-created', handleRoomCreated);
-    newSocket.on('room-joined', handleRoomJoined);
     newSocket.on('player-joined', handlePlayerJoined);
     newSocket.on('player-left', handlePlayerLeft);
     newSocket.on('game-started', handleOnlineGameStarted);
+    newSocket.on('increment-turn', handleIncrementTurn);
     newSocket.on('connect_error', handleError);
     newSocket.on('rankings-submitted', handleRankingsSubmitted);
     newSocket.on('score-updated', handleScoreUpdated);
@@ -244,7 +287,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       newSocket.removeAllListeners();
       // Disconnect socket
       if (roomCode && newSocket.connected) {
-        newSocket.emit('leave-room', { roomCode, userId: onlineUserIdRef.current }); // probably don't need to pass data bc using socket.io
+        newSocket.emit('leave-room', { roomCode, userId: onlineUserIdRef.current });
         if (players.find(player => player.userId === onlineUserIdRef.current)?.isHost) {
           newSocket.emit('delete-room', { roomCode });
         }
@@ -255,10 +298,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [serverUrl, setPlayers]);
 
-  // Update card deck when category changes
-  useEffect(() => {
-    setCardDeck(cardDecks[category]);
-  }, [category]);
+
 
   // Use `useCallback` to optimize updater functions
   const updateCategory = useCallback(
@@ -299,7 +339,6 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     []
   );
 
-  // add callbacks for setGameMode and setOnlineUserId. callback takes in a function duh
 
   const handleResetGame = () => {
     setGameState('setup');
@@ -311,13 +350,28 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setGroupPredictions([]);
     setOnlineUserId('');
     setGameMode(GameModes.SINGLE_DEVICE);
+    setGameRoom({
+      ...gameRoom,
+      game: {
+        ...gameRoom.game,
+        currentRound: 1,
+        targetPlayerIndex: 0,
+        currentCards: [],
+        targetRankings: [],
+      }
+    });
   };
 
   const calculateRoundScore = () => {
     let total = 20;
+
+    if (groupPredictions.length === 0) {
+      return 0;
+    }
+
     targetRankings.forEach((cardText, index) => {
       const predictionIndex = groupPredictions.indexOf(cardText);
-      // or do for currentOnlinePlayer and post the score to appsync
+
       total -= Math.abs(predictionIndex - index);
     });
     return total;
@@ -325,45 +379,96 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   const roundScore = calculateRoundScore();
   const isGameOver =
-    currentRound === totalRounds && targetPlayerIndex + 1 === players.length; // not necessary
+    currentRound === totalRounds && (targetPlayerIndex + 1 === players.length || targetPlayerIndex + 1 === gameRoom?.players?.length);
 
   const getNextCards = () => {
+
     const turnsFromPreviousRounds = (currentRound - 1) * players.length;
     const turnsInCurrentRound = targetPlayerIndex;
     const currentTurns = turnsFromPreviousRounds + turnsInCurrentRound + 1;
     return cardDeck.slice(currentTurns * 5, currentTurns * 5 + 5);
   };
 
-  const handleUpdateScore = () => {
+  const handleUpdateScore = () => { // some event needs to be emitted
     // Update scores for non-target players after reviewing the group prediction results
+    const nextCards = getNextCards();
 
-    const playersWithUpdatedScore = players.map((player, idx) => ({
-      ...player,
-      score:
-        idx === targetPlayerIndex ? player.score : player.score + roundScore,
-    }));
-    setPlayers(playersWithUpdatedScore);
+    if (gameMode === GameModes.ONLINE) {
+      console.log('next-turn', !!roomCode, roomCode, gameRoom.code, nextCards) // or use gameRoom.code
+      socket?.emit('next-turn', roomCode, nextCards);
+      // socket?.emit('update-score', roomCode, gameRoom);
+      // if (isGameOver) {
+      //   setGameState('gameOver');
+      // } else {
+      //   const newGameRoom = { ...gameRoom };
+      //   if (newGameRoom.game) {
+      //     newGameRoom.game = {
+      //       ...newGameRoom.game,
+      //       currentRound: (newGameRoom.game.currentRound ?? 0) + 1,
+      //       currentCards: nextCards,
+      //       targetRankings: [],
+      //       groupPredictions: [],
+      //       // targetPlayerIndex: 0,
+      //       // totalRounds: totalRounds,
+      //     };
+      //   }
 
-    if (isGameOver) {
-      setGameState('gameOver');
+      //   newGameRoom.players = players;
+      //   // go to next round
+      //   if (targetPlayerIndex + 1 === players.length) {
+      //     // setCurrentRound(currentRound + 1);
+      //     // setTargetPlayerIndex(0);
+      //     if (newGameRoom.game) {
+      //       newGameRoom.game.currentRound = currentRound + 1;
+      //       newGameRoom.game.targetPlayerIndex = 0;
+      //     }
+      //   } else { // go to the next target player
+      //     // setTargetPlayerIndex(targetPlayerIndex + 1);
+      //     if (newGameRoom.game) {
+      //       newGameRoom.game.targetPlayerIndex = targetPlayerIndex + 1;
+      //     }
+      //   }
+
+      //   setCurrentCards(nextCards);
+      //   setTargetRankings([]);
+      //   setGroupPredictions([]);
+      //   setGameRoom({
+      //     ...newGameRoom,
+      //     code: newGameRoom.code ?? '',
+      //     players: newGameRoom.players ?? [],
+      //     host: newGameRoom.host ?? '',
+      //     game: newGameRoom.game
+      //   });
+      // }
     } else {
-      const nextCards = getNextCards();
-      setCurrentCards(nextCards);
-      setTargetRankings([]);
-      setGroupPredictions([]);
-      setGameState('targetRanking');
-      // go to next round
-      if (targetPlayerIndex + 1 === players.length) {
-        setCurrentRound(currentRound + 1);
-        setTargetPlayerIndex(0);
+
+      const playersWithUpdatedScore = players.map((player, idx) => ({
+        ...player,
+        score:
+          idx === targetPlayerIndex ? player.score : player.score + roundScore,
+      }));
+      setPlayers(playersWithUpdatedScore);
+
+      if (isGameOver) {
+        setGameState('gameOver');
       } else {
-        setTargetPlayerIndex(targetPlayerIndex + 1);
+        setCurrentCards(nextCards);
+        setTargetRankings([]);
+        setGroupPredictions([]);
+        setGameState('targetRanking');
+        // go to next round
+        if (targetPlayerIndex + 1 === players.length) {
+          setCurrentRound(currentRound + 1);
+          setTargetPlayerIndex(0);
+        } else {
+          setTargetPlayerIndex(targetPlayerIndex + 1);
+        }
       }
     }
   };
 
   // Fisher-Yates (Knuth) Shuffle
-  const shuffleArray = (array: string[]): string[] => {
+  const shuffleCards = (array: string[]): string[] => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const randomNum = Math.floor(Math.random() * (i + 1));
@@ -381,10 +486,10 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       // shuffle the card deck and grab enough for the game
       const deck = cardDecks[category];
       const deckCopy = [...deck];
-      const shuffledDeck = shuffleArray(deckCopy);
-      const shuffledDeckSlice = shuffledDeck.slice(0, players.length * 5);
-      setCardDeck(shuffledDeckSlice);
-      const currentCards = shuffledDeckSlice.slice(0, 5)
+      const shuffledDeck = shuffleCards(deckCopy);
+      const currentGameDeck = shuffledDeck.slice(0, players.length * 5 * totalRounds);
+      setCardDeck(currentGameDeck);
+      const currentCards = currentGameDeck.slice(0, 5)
       setCurrentCards(currentCards);
       if (gameMode === GameModes.ONLINE) {
         socket?.emit('start-game', roomCode, totalRounds, currentCards);
@@ -466,6 +571,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setError,
     mode,
     setMode,
+    gameRoom,
+    setGameRoom,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

@@ -104,7 +104,7 @@ export const SetupScreen = () => {
             )}
           </div>
           {(gameMode === GameModes.SINGLE_DEVICE || (mode === 'create' || mode === 'ready')) && (
-            <div className='py-4 flex justify-between'>
+            <div className='py-4 flex justify-evenly'>
               {/* Category */}
               <span>
                 <label htmlFor='category' className='font-medium mr-1 lg:mr-2'>Category:</label>

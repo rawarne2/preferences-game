@@ -20,6 +20,7 @@ export interface Player {
   isHost?: boolean; //  online only. When a player is the host of a game room, this is set to true.
   isOnline?: boolean; //  online only. When a player joins or creates a game room, this is set to true
   isConnected?: boolean; //  online only. When a player disconnects, this is set to false
+  roundScore?: number; // online only. Score for the current round
 };
 
 export type RoomData = { // will change
@@ -33,19 +34,19 @@ export enum GameModes {
 }
 
 export interface Game {
-  currentRound?: number;
-  totalRounds?: number;
-  targetPlayerIndex?: number;
-  currentCards?: string[];
-  targetRankings?: string[];
-  groupPredictions?: string[];
+  currentRound: number;
+  totalRounds: number;
+  targetPlayerIndex: number;
+  currentCards: string[];
+  targetRankings: string[];
+  groupPredictions: string[];
 }
 
 export interface GameRoom {
   code: string;
-  players?: Player[];
+  players: Player[];
   host?: string;
-  game?: Game;
+  game: Game;
 }
 
 export type GameContextType = {
@@ -88,6 +89,8 @@ export type GameContextType = {
   setError: (error: string) => void;
   mode: 'select' | 'create' | 'join' | 'ready';
   setMode: (mode: 'select' | 'create' | 'join' | 'ready') => void;
+  gameRoom: GameRoom;
+  setGameRoom: React.Dispatch<React.SetStateAction<GameRoom>>;
 };
 
 // Context
