@@ -149,7 +149,7 @@ export const OnlinePlayerList: React.FC = () => {
               className='w-full py-3 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
               disabled={!inputCode || inputCode.length !== 10 || !name.trim()}
             >
-              Join Game!
+              Join Game
             </button>
           </div>
           {error && <p className='text-red-500 text-sm mt-2'>{error}</p>}

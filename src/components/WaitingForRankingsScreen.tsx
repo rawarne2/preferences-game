@@ -3,7 +3,7 @@ import { useGameContext } from "../context/GameContext";
 import { ResetGameButton } from "./ResetGameButton";
 
 export const WaitingForRankingsScreen = () => {
-    const { gameRoom, targetPlayerIndex, setGameState, setTargetRankings } = useGameContext();
+    const { gameRoom, targetPlayerIndex, setGameState, setTargetRankings, socket } = useGameContext();
 
     const [playersWaiting, setPlayersWaiting] = useState<string[]>([]);
 
@@ -23,6 +23,7 @@ export const WaitingForRankingsScreen = () => {
                 }
             })
             const slackers: string[] = Array.from(playersWithoutRankings) as string[];
+            console.log({ playersWithoutRankings, slackers, gameRoom, socket });
             return slackers;
         }
         const playersWaiting = getPlayersWaitingFor();
@@ -34,7 +35,7 @@ export const WaitingForRankingsScreen = () => {
             return
         }
         setPlayersWaiting(playersWaiting);
-    }, [gameRoom, targetPlayerIndex, setGameState, setTargetRankings]);
+    }, [gameRoom, targetPlayerIndex, setGameState, setTargetRankings, socket]);
 
 
     return (

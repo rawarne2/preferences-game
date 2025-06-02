@@ -13,7 +13,7 @@ const PreferencesGame: React.FC = () => {
 
   // Render the appropriate screen based on game state
   return (
-    <div className='flex flex-col w-full h-full fixed items-center justify-center'>
+    <div className='flex flex-col w-full h-full fixed items-center justify-start'>
       {gameState === 'setup' && <SetupScreen />}
       {(gameState === 'targetRanking' || gameState === 'groupPrediction') && (
         <CardRankingScreen />

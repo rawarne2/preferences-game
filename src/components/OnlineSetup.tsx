@@ -166,7 +166,7 @@
 //   };
 
 //   return (
-//     <div className='bg-gray-100'>
+//     <div className='bg-gray-200'>
 //       <div className='bg-white rounded-xl shadow-md overflow-hidden'>
 //         <div className='lg:p-8 p-4'>
 //           <h2 className='text-2xl font-bold text-blue-600 mb-6 text-center'>
@@ -192,7 +192,7 @@
 //                   placeholder='Enter Room Code'
 //                   value={inputCode}
 //                   onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-//                   className='w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+//                   className='w-full py-3 px-4 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
 //                   maxLength={12}
 //                   disabled={isConnecting}
 //                 />
@@ -230,7 +230,7 @@
 //                   Back
 //                 </button>
 //               )}
-//               <div className='bg-gray-50 p-4 rounded-lg'>
+//               <div className='bg-gray-200 p-4 rounded-lg'>
 //                 <p className='text-sm text-gray-600'>Room Code:</p>
 //                 <p className='text-xl font-mono font-bold text-blue-600'>
 //                   {roomCode}
@@ -245,7 +245,7 @@
 //                       placeholder='Enter your name'
 //                       value={playerName}
 //                       onChange={(e) => setPlayerName(e.target.value)}
-//                       className='w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+//                       className='w-full py-3 px-4 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
 //                       maxLength={20}
 //                       disabled={isConnecting}
 //                     />
@@ -272,7 +272,7 @@
 //                       {players.map((player) => (
 //                         <div
 //                           key={player.id}
-//                           className='bg-gray-50 p-3 rounded-lg flex items-center'
+//                           className='bg-gray-200 p-3 rounded-lg flex items-center'
 //                         >
 //                           <span className='text-gray-800'>{player.name}</span>
 //                         </div>

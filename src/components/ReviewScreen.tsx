@@ -21,7 +21,7 @@ export const ReviewScreen = () => {
     if (gameRoom?.game?.targetRankings) {
       setTargetRankings(gameRoom?.game?.targetRankings)
     }
-  }, []);
+  }, [gameRoom?.game?.targetRankings, setTargetRankings]);
 
   const playerName = players[targetPlayerIndex].name;
 
@@ -33,19 +33,19 @@ export const ReviewScreen = () => {
 
 
   return (
-    <div className='flex flex-col lg:text-xl w-full items-center justify-between fixed h-[calc(100%-2em)] mb-4 px-2'>
+    <div className='flex flex-col lg:text-xl w-full items-center justify-between lg:justify-start lg:mb-16 px-2 lg:px-0 box-border h-[80vh]'>
       <>
-        <h1 className='lg:text-3xl text-2xl font-bold mb-4'>
+        <h1 className='lg:text-3xl text-2xl font-bold mb-4 lg:mt-4'>
           Scores for {players[targetPlayerIndex].name}'s Turn
         </h1>
       </>
-      <div className='flex flex-col h-full w-full'>
+      <div className='flex flex-col w-full justify-start'>
         <div className='flex lg:flex-col items-center justify-center'>
-          <div className='lg:mb-4 h-full lg:h-auto px-2'>
+          <div className='px-2'>
             <h2 className='font-semibold mb-2 text-xl underline underline-offset-4 text-center'>
               {playerName}
             </h2>
-            <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly pr-2'>
+            <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly'>
               {targetRankings.map((card, index) => (
                 <div
                   className={`group
@@ -63,7 +63,7 @@ export const ReviewScreen = () => {
                       transform
                       transition-all
                       hover:scale-105
-                      hover:shadow-2xl
+                      hover:shadow-xl
                       items-center
                       justify-center
                       min-w-32
@@ -120,11 +120,11 @@ export const ReviewScreen = () => {
                             ? 'shadow-yellow-900 bg-yellow-50 border-yellow-600'
                             : 'shadow-red-900 bg-red-50 border-red-600'
                         }
-                        shadow-lg
+                        shadow-md
                         transform
                         transition-all
                         hover:scale-105
-                        hover:shadow-2xl
+                        hover:shadow-xl
                         items-center
                         justify-center
                         w-[40vw] md:w-[30vw] lg:w-[15vw]  h-[11vh]
@@ -178,7 +178,6 @@ export const ReviewScreen = () => {
                               border-2
                               rounded-lg
                               mb-2
-                              lg:mb-5
                               text-center
                               cursor-pointer
                               ${diff === 0
@@ -187,11 +186,11 @@ export const ReviewScreen = () => {
                                     ? 'shadow-yellow-900 bg-yellow-50 border-yellow-600'
                                     : 'shadow-red-900 bg-red-50 border-red-600'
                                 }
-                              shadow-lg
+                              shadow-md
                               transform
                               transition-all
                               hover:scale-105
-                              hover:shadow-2xl
+                              hover:shadow-xl
                               items-center
                               justify-center
                               w-[40vw] md:w-[30vw] lg:w-[15vw] h-[11vh]
@@ -220,7 +219,7 @@ export const ReviewScreen = () => {
           </div>
         </div>
 
-        <div className='flex flex-row md:mt-3 lg:mt-4 justify-center'>
+        <div className='flex flex-row md:mt-3 lg:mb-16 justify-center bottom-8 lg:bottom-0 fixed w-full'>
           {gameMode === GameModes.SINGLE_DEVICE && (
             <p className='text-2xl font-semibold underline underline-offset-4 flex items-center'>
               Score: {roundScore}/20
