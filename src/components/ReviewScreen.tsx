@@ -157,7 +157,7 @@ export const ReviewScreen = () => {
                       )}
                     </div>
                     <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly'>
-                      {targetRankings.map((rankedCard, cardIndex) => {
+                      {targetRankings.map((_, cardIndex) => {
                         const diff = Math.abs(targetRankings.indexOf(player.rankings?.[cardIndex] || '') - cardIndex);
                         return (
                           <div className='flex lg:flex-col justify-center items-center' key={cardIndex}>
