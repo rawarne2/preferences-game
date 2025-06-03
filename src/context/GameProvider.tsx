@@ -143,10 +143,22 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   }, [currentRound, totalRounds]);
 
   useEffect(() => {
-    // Create socket connection
+    // Only create socket connection when in online mode
+    if (gameMode !== GameModes.ONLINE) {
+      // Disconnect existing socket if switching away from online mode
+      if (socket) {
+        socket.removeAllListeners();
+        socket.disconnect();
+        setSocket(null);
+      }
+      return;
+    }
+
+    // Create socket connection for online mode
     const newSocket = io(serverUrl, {
       reconnection: true,
       reconnectionAttempts: 3,
+      reconnectionDelay: 1000,
       withCredentials: isProduction,
       secure: isProduction,
       rejectUnauthorized: isProduction,
@@ -157,6 +169,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up socket listeners
     const handleConnect = () => {
       setIsConnecting(false);
+      console.error('connected to server');
+      setError('');
     };
     setSocket(newSocket);
 
@@ -169,6 +183,10 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     const handleRoomCreated = ({ roomCode }: { roomCode: string }) => {
       console.log('room created', roomCode);
       setRoomCode(roomCode);
+      setGameRoom(prev => ({
+        ...prev,
+        code: roomCode
+      }));
       setMode('create');
       setError('');
     };
@@ -177,6 +195,8 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     const handlePlayerJoined = (updatedPlayers: Player[]) => {
       console.log('player joined', updatedPlayers);
       setPlayers(updatedPlayers);
+      setMode('ready');
+      setError('');
       setGameRoom({
         ...gameRoom,
         players: updatedPlayers
@@ -264,6 +284,11 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('game over');
     };
 
+    const handleMessage = (message: string) => {
+      console.log('message', message);
+      // alert(message);
+    };
+
     // Attach listeners
     newSocket.on('connect_error', (err) => {
       console.log('Connection error: ', err);
@@ -281,22 +306,16 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     newSocket.on('score-updated', handleScoreUpdated);
     newSocket.on('room-deleted', handleRoomDeleted);
     newSocket.on('game-over', handleGameOver);
+    newSocket.on('message', handleMessage);
 
     // Cleanup function
     return () => {
       newSocket.removeAllListeners();
       // Disconnect socket
-      if (roomCode && newSocket.connected) {
-        newSocket.emit('leave-room', { roomCode, userId: onlineUserIdRef.current });
-        if (players.find(player => player.userId === onlineUserIdRef.current)?.isHost) {
-          newSocket.emit('delete-room', { roomCode });
-        }
-      }
-
-      // Disconnect socket
+      console.log('cleanup', roomCode, onlineUserIdRef.current, newSocket.connected);
       newSocket.disconnect();
     };
-  }, [serverUrl, setPlayers]);
+  }, [serverUrl, setPlayers, gameMode]);
 
 
 
@@ -349,15 +368,18 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     setTargetRankings([]);
     setGroupPredictions([]);
     setOnlineUserId('');
+    setRoomCode('');
     setGameMode(GameModes.SINGLE_DEVICE);
     setGameRoom({
-      ...gameRoom,
+      code: '',
+      players: [],
       game: {
-        ...gameRoom.game,
         currentRound: 1,
+        totalRounds: 5,
         targetPlayerIndex: 0,
         currentCards: [],
         targetRankings: [],
+        groupPredictions: [],
       }
     });
   };

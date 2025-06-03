@@ -31,8 +31,6 @@ export const OnlinePlayerList: React.FC = () => {
       setRoomCode(inputCode);
       setIsNameSubmitted(true);
       setOnlineUserId(newId);
-      setMode('ready');
-      setError('');
     } else if (!name.trim()) {
       setError('Please enter your name');
     } else if (inputCode.length !== 10) {
@@ -40,7 +38,7 @@ export const OnlinePlayerList: React.FC = () => {
     } else {
       setError('Please enter your name and room code');
     }
-  }, [socket, inputCode, name, onlineUserId]);
+  }, [mode, socket, inputCode, name, setMode, newId, setRoomCode, setOnlineUserId, setError]);
 
   const handleNameSubmit = useCallback(
     () => {
@@ -62,7 +60,7 @@ export const OnlinePlayerList: React.FC = () => {
         setError('Please enter your name');
       }
     },
-    [socket, roomCode, name, onlineUserId]
+    [socket, roomCode, name, setError, setOnlineUserId, newId, players]
   );
 
   // Handle leaving room
@@ -77,11 +75,11 @@ export const OnlinePlayerList: React.FC = () => {
     setIsNameSubmitted(false);
     setPlayers([]);
     setError('');
-  }, [socket, roomCode, setPlayers]);
+  }, [socket, roomCode, setPlayers, setError, setMode, setRoomCode, onlineUserId]);
 
   return (
     <div className='bg-white rounded-xl shadow-sm shadow-blue-900 lg:p-8 p-4 my-4 w-full'>
-      <h2 className='text-2xl font-bold text-blue-600 mb-6 text-center'>
+      <h2 className='text-2xl font-bold text-blue-600 text-center'>
         Game Room Setup
       </h2>
 
@@ -111,11 +109,11 @@ export const OnlinePlayerList: React.FC = () => {
         <div className='space-y-4'>
           <button
             onClick={handleBack}
-            className='text-blue-500 hover:text-blue-600 flex items-center gap-2 mb-2'
+            className='text-blue-500 hover:text-blue-600 flex items-center'
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
-              className='h-5 w-5'
+              className='h-5 w-5 pr-1'
               viewBox='0 0 20 20'
               fill='currentColor'
             >
@@ -160,11 +158,11 @@ export const OnlinePlayerList: React.FC = () => {
         <div className='space-y-4'>
           <button
             onClick={handleBack}
-            className='text-blue-500 hover:text-blue-600 flex items-center gap-2 mb-2'
+            className='text-blue-500 hover:text-blue-600 flex items-center'
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
-              className='h-5 w-5'
+              className='h-5 w-5 pr-1'
               viewBox='0 0 20 20'
               fill='currentColor'
             >
@@ -218,7 +216,7 @@ export const OnlinePlayerList: React.FC = () => {
                   {players?.map((player) => (
                     <div
                       key={player.userId}
-                      className='bg-gray-200 p-3 rounded-lg flex items-center'
+                      className='bg-gray-200 p-3 rounded-lg flex items-center justify-center'
                     >
                       <span className='text-gray-800'>{player.name}</span>
                     </div>

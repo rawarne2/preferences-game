@@ -16,7 +16,9 @@ export const SetupScreen = () => {
     category,
     gameMode,
     setGameMode,
-    mode
+    mode,
+    gameRoom,
+    onlineUserId
     // setOnlineUserId,
   } = useGameContext();
   const handleNewPlayerNameChange = (
@@ -46,16 +48,22 @@ export const SetupScreen = () => {
     setPlayers(players.filter((_, i) => i !== index));
   };
 
+  const handleSetGameMode = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setGameMode(e.currentTarget.value as GameModes);
+  };
+
+  const isHost = gameRoom?.players?.find(player => player.userId === onlineUserId)?.isHost;
+
   return (
-    <div className='flex flex-col w-full md:w-3/4 max-w-screen-sm pt-12 items-center justify-center overflow-y-scroll no-scrollbar'>
+    <div className='flex flex-col w-full md:w-3/4 max-w-screen-sm pt-4 items-center justify-center overflow-y-scroll no-scrollbar'>
       <h1 className='text-3xl font-bold border-b-4 border-b-blue-600'>
         Preferences
       </h1>
 
       {/* Game Mode */}
-      <div className='md:mt-6 mt-4 text-lg shadow-md shadow-blue-900 w-[96%] md:w-auto my-4 md:m-8 rounded-xl bg-gray-200 p-3 md:p-4 lg:p-8'>
+      <div className='text-lg w-[96%] md:w-auto md:m-4 rounded-xl bg-gray-200 p-3 md:p-4 lg:p-8 overflow-auto no-scrollbar '>
         <div className="bg-white rounded-xl shadow-sm shadow-blue-900 p-4 w-full">
-          <div role='tablist' className='inline-block lg:mb-4'>
+          <div role='tablist' className='inline-block'>
             <div className='flex items-center mb-2'>
               <button
                 onClick={() => setShowGameModeInfo(!showGameModeInfo)}
@@ -69,7 +77,7 @@ export const SetupScreen = () => {
                 title='Single Device'
                 value={GameModes.SINGLE_DEVICE}
                 role='tab'
-                onClick={() => setGameMode(GameModes.SINGLE_DEVICE)}
+                onClick={handleSetGameMode}
                 className={`py-2 px-2 md:px-8 border text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 ${gameMode === GameModes.SINGLE_DEVICE
                   ? 'bg-blue-500 shadow-lg scale-110 focus:ring-blue-500 font-semibold'
                   : 'bg-gray-400 hover:bg-gray-1000'
@@ -81,7 +89,7 @@ export const SetupScreen = () => {
                 title='Online'
                 value={GameModes.ONLINE}
                 role='tab'
-                onClick={() => setGameMode(GameModes.ONLINE)}
+                onClick={handleSetGameMode}
                 className={`py-2 px-2 md:px-8 border text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 ${gameMode === GameModes.ONLINE
                   ? 'bg-blue-500 shadow-lg scale-110  focus:ring-blue-500 font-semibold'
                   : 'bg-gray-400 hover:bg-gray-1000'
@@ -103,8 +111,8 @@ export const SetupScreen = () => {
               </div>
             )}
           </div>
-          {(gameMode === GameModes.SINGLE_DEVICE || (mode === 'create' || mode === 'ready')) && (
-            <div className='py-4 flex justify-evenly'>
+          {(gameMode === GameModes.SINGLE_DEVICE || (mode === 'create' || mode === 'ready')) && isHost && (
+            <div className='pt-2 flex justify-evenly'>
               {/* Category */}
               <span>
                 <label htmlFor='category' className='font-medium mr-1 lg:mr-2'>Category:</label>
@@ -141,13 +149,13 @@ export const SetupScreen = () => {
 
         {gameMode === GameModes.SINGLE_DEVICE ? (
           <div className='flex flex-col items-center bg-white rounded-xl shadow-sm shadow-blue-900 lg:p-8 p-4 my-4 w-full'>
-            <div className='flex justify-center items-center space-x-2 w-full lg:mb-4 mb-2'>
+            <div className='flex justify-center items-center space-x-2 lg:mb-4 mb-2 w-full'>
               <input
                 type='text'
                 value={newPlayerName}
                 onChange={handleNewPlayerNameChange}
                 placeholder='Add a player'
-                className='p-2 border rounded w-2/3 border-gray-400'
+                className='p-2 border rounded w-full border-gray-400'
                 name='newPlayerName'
                 id='newPlayerName'
                 maxLength={20}
@@ -160,7 +168,7 @@ export const SetupScreen = () => {
               </button>
             </div>
             {players?.length > 0 && (
-              <div className='lg:mb-4 mb-2'>
+              <div className='lg:mb-4 mb-2 w-full'>
                 <ul className='space-y-2'>
                   {players.map((player, index) => (
                     <li key={index} className='flex justify-center items-center'>

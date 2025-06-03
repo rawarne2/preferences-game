@@ -5,7 +5,7 @@ import { GameOverScreen } from './GameOverScreen';
 import { useGameContext } from '../context/GameContext';
 import { CardRankingScreen } from './CardRankingScreen';
 import { WaitingForRankingsScreen } from './WaitingForRankingsScreen';
-import { ResetGameButton } from './ResetGameButton';
+// import { ResetGameButton } from './ResetGameButton';
 
 const PreferencesGame: React.FC = () => {
   const { gameState } = useGameContext();
@@ -23,9 +23,9 @@ const PreferencesGame: React.FC = () => {
       )}
       {gameState === 'review' && <ReviewScreen />}
       {gameState === 'gameOver' && <GameOverScreen />}
-      <div className='absolute bottom-0 left-0 right-0'>
+      {/* <div className='absolute bottom-0 left-0 right-0'>
         <ResetGameButton />
-      </div>
+      </div> */}
     </div>
   );
 };
