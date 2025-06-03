@@ -56,7 +56,7 @@ export const SetupScreen = () => {
 
   return (
     <div className='flex flex-col w-full md:w-3/4 max-w-screen-sm pt-4 items-center justify-center overflow-y-scroll no-scrollbar'>
-      <h1 className='text-3xl font-bold border-b-4 border-b-blue-600'>
+      <h1 className='mb-4 text-3xl font-bold border-b-4 border-b-blue-600'>
         Preferences
       </h1>
 
@@ -102,16 +102,20 @@ export const SetupScreen = () => {
               <div className='mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm'>
                 <div className='space-y-2'>
                   <div>
-                    <span className='font-semibold text-blue-700'>Offline:</span> Play on a single device with friends taking turns
+                    <div>
+
+                      <span className='font-semibold text-blue-700'>General:</span> Players take turn ranking which cards they prefer from most (1) to least (5). Other players guess the order that the target player ranked the cards. Players score points depending on how close their guess is to the target player's rankings. Only non-target players can score points for that turn.
+                    </div>
+                    <span className='font-semibold text-blue-700'>Offline:</span> Play on a single device with players in person. The players that are not the target player, must agree as a group how the target player ranked the cards.
                   </div>
                   <div>
-                    <span className='font-semibold text-blue-700'>Online:</span> Create or join a room to play with friends on different devices
+                    <span className='font-semibold text-blue-700'>Online:</span> Create or join a game room to play with friends on different devices. Non-target players must each guess the target player's rankings. The host can set the number of rounds, category, and start the game.
                   </div>
                 </div>
               </div>
             )}
           </div>
-          {(gameMode === GameModes.SINGLE_DEVICE || (mode === 'create' || mode === 'ready')) && isHost && (
+          {(gameMode === GameModes.SINGLE_DEVICE || ((mode === 'create' || mode === 'ready'))) && (
             <div className='pt-2 flex justify-evenly'>
               {/* Category */}
               <span>
@@ -189,9 +193,8 @@ export const SetupScreen = () => {
           </div>
         ) : (
           <OnlinePlayerList />
-          // <OnlineSetup />
         )}
-        {(gameMode === GameModes.SINGLE_DEVICE || (mode === 'create' || mode === 'ready')) && (
+        {(gameMode === GameModes.SINGLE_DEVICE || ((mode === 'create' || mode === 'ready') && isHost)) && (
           <button
             onClick={handleStartGame}
             disabled={players?.length < 2}

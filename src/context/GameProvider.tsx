@@ -169,7 +169,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up socket listeners
     const handleConnect = () => {
       setIsConnecting(false);
-      console.error('connected to server');
+      console.log('connected to server');
       setError('');
     };
     setSocket(newSocket);
