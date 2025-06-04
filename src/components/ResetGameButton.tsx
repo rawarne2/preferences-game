@@ -5,7 +5,17 @@ export const ResetGameButton = () => {
   // const { setGameState, setCurrentRound, setTargetPlayerIndex, setCurrentCards, setTargetRankings, setGroupPredictions } = useGameContext();
   const clearLocalStorage = () => {
     if (window.confirm('Are you sure you want to reset the game?')) {
+      // Preserve players data
+      const players = localStorage.getItem('players');
+
+      // Clear all localStorage
       localStorage.clear();
+
+      // Restore players data
+      if (players) {
+        localStorage.setItem('players', players);
+      }
+
       window.location.reload();
       // setGameState('setup');
       // setCurrentRound(0);

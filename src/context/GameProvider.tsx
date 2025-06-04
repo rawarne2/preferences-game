@@ -4,7 +4,7 @@ import { Category, GameContext, GameModes, GameRoom, GameState, Player } from '.
 import { io, Socket } from 'socket.io-client';
 
 // TODO: use all callbacks instead of useState functions directly. useState functions shouldn't even be exported.
-
+// is gameRoom not needed since there is a socket.rooms?
 export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [category, setCategory] = useState<Category>(() => {
     return (localStorage.getItem('category') as Category) || 'general';
@@ -22,7 +22,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     return parseInt(localStorage.getItem('currentRound') || '1', 10);
   });
   const [totalRounds, setTotalRounds] = useState<number>(() => {
-    return parseInt(localStorage.getItem('totalRounds') || '5', 10);
+    return parseInt(localStorage.getItem('totalRounds') || '3', 10);
   });
   const [targetPlayerIndex, setTargetPlayerIndex] = useState<number>(() => {
     return parseInt(localStorage.getItem('targetPlayerIndex') || '0', 10);
@@ -162,7 +162,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       withCredentials: isProduction,
       secure: isProduction,
       rejectUnauthorized: isProduction,
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       port: port,
     });
 

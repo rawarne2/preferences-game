@@ -174,11 +174,11 @@ export const OnlinePlayerList: React.FC = () => {
             </svg>
             Back
           </button>
-          <div className='bg-gray-200 p-4 rounded-lg'>
-            <p className='text-sm text-gray-600'>Room Code:</p>
-            <p className='text-xl font-mono font-bold text-blue-600'>
+          <div className='bg-blue-200 p-4 rounded-lg inline-block space-x-2 w-full'>
+            <label className=' text-gray-600'>Room Code:</label>
+            <span className='text-xl font-mono font-bold text-blue-600'>
               {roomCode}
-            </p>
+            </span>
           </div>
 
           {!isNameSubmitted ? (
@@ -204,10 +204,10 @@ export const OnlinePlayerList: React.FC = () => {
             </form>
           ) : (
             <div className='space-y-4'>
-              <div className='bg-blue-200 p-4 rounded-lg'>
+              {/* <div className='bg-blue-200 p-4 rounded-lg'>
                 <p className='text-sm text-blue-600'>Your name:</p>
                 <p className='font-medium'>{name}</p>
-              </div>
+              </div> */}
               <div>
                 <h3 className='text-lg font-medium text-gray-900 mb-2'>
                   Players in Room
@@ -216,7 +216,7 @@ export const OnlinePlayerList: React.FC = () => {
                   {players?.map((player) => (
                     <div
                       key={player.userId}
-                      className='bg-gray-200 p-3 rounded-lg flex items-center justify-center'
+                      className={`p-3 rounded-lg flex items-center justify-center ${player.name === name ? 'bg-blue-200' : 'bg-gray-200'}`}
                     >
                       <span className='text-gray-800'>{player.name}</span>
                     </div>
