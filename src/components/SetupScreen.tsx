@@ -172,23 +172,21 @@ export const SetupScreen = () => {
               </button>
             </div>
             {players?.length > 0 && (
-              <div className='lg:mb-4 mb-2 w-full'>
-                <ul className='space-y-2'>
-                  {players.map((player, index) => (
-                    <li key={index} className='flex justify-center items-center'>
-                      <div className='bg-gray-200 px-4 flex-1 py-2 rounded-lg'>
-                        {player.name}
-                      </div>
-                      <button
-                        onClick={() => handleRemovePlayer(index)}
-                        className='bg-red-500 hover:bg-red-700 rounded ml-1 md:ml-2 px-3 text-white text-center h-8'
-                      >
-                        X
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul className='space-y-2 lg:mb-4 mb-2 w-full'>
+                {players.map((player, index) => (
+                  <li key={player.userId} className='p-2 rounded-lg flex-1 flex justify-center items-center bg-gray-200'>
+                    <div className='flex flex-1 justify-center'>
+                      {player.name}
+                    </div>
+                    <button
+                      onClick={() => handleRemovePlayer(index)}
+                      className='justify-end bg-red-500 hover:bg-red-700 rounded px-3 text-white text-center h-8'
+                    >
+                      X
+                    </button>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         ) : (

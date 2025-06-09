@@ -37,25 +37,20 @@ export const WaitingForRankingsScreen = () => {
         setPlayersWaiting(playersWaiting);
     }, [gameRoom, targetPlayerIndex, setGameState, setTargetRankings, socket]);
 
-
     return (
         <div className="flex flex-col items-center space-y-4 p-6">
             <h3 className="text-2xl font-bold">Waiting for rankings...</h3>
-            <div className="text-center">
-                {(() => {
-                    return (
-                        <div className="space-y-2">
-                            <p className="text-lg text-gray-700">Still waiting for:</p>
-                            <ul className="space-y-1">
-                                {playersWaiting.map((player, index) => (
-                                    <li key={`${player}-${index}`} className="text-blue-600 font-medium">
-                                        {player}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    );
-                })()}
+            <div className="text-center w-full">
+                <div className="space-y-2">
+                    <p className="text-lg">Still waiting for:</p>
+                    <ul className="space-y-2 lg:mb-4 mb-2 w-full">
+                        {playersWaiting.map((player, index) => (
+                            <li key={`${player}-${index}`} className="p-2 rounded-lg flex-1 flex justify-center items-center bg-gray-200">
+                                <div className="flex flex-1 justify-center">{player}</div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
             <ResetGameButton />
         </div>

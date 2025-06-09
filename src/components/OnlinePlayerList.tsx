@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { useGameContext } from '../context/GameContext';
 import { v4 as uuidv4 } from 'uuid';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import toast from 'react-hot-toast';
 
 
 export const OnlinePlayerList: React.FC = () => {
@@ -106,7 +108,7 @@ export const OnlinePlayerList: React.FC = () => {
       )}
 
       {!isConnecting && mode === 'join' && (
-        <div className='space-y-4'>
+        <div className='space-y-2'>
           <button
             onClick={handleBack}
             className='text-blue-500 hover:text-blue-600 flex items-center'
@@ -155,7 +157,7 @@ export const OnlinePlayerList: React.FC = () => {
       )}
 
       {!isConnecting && (mode === 'create' || mode === 'ready') && (
-        <div className='space-y-4'>
+        <div className='space-y-2'>
           <button
             onClick={handleBack}
             className='text-blue-500 hover:text-blue-600 flex items-center'
@@ -174,11 +176,23 @@ export const OnlinePlayerList: React.FC = () => {
             </svg>
             Back
           </button>
-          <div className='bg-blue-200 p-4 rounded-lg inline-block space-x-2 w-full'>
-            <label className=' text-gray-600'>Room Code:</label>
+          <div className='bg-blue-200 p-4 rounded-lg w-full flex items-center justify-center space-x-2'>
+            <label className='font-semibold'>Room Code:</label>
             <span className='text-xl font-mono font-bold text-blue-600'>
               {roomCode}
             </span>
+            <div className='flex items-center pl-4'>
+              <CopyToClipboard text={roomCode} onCopy={() => toast.success('Room code copied to clipboard!')}>
+                <button
+                  className="hover:bg-blue-300 rounded transition-colors"
+                  title="Copy room code"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                </button>
+              </CopyToClipboard>
+            </div>
           </div>
 
           {!isNameSubmitted ? (
@@ -209,22 +223,28 @@ export const OnlinePlayerList: React.FC = () => {
                 <p className='font-medium'>{name}</p>
               </div> */}
               <div>
-                <h3 className='text-lg font-medium text-gray-900 mb-2'>
+                <h3 className='text-xl font-semibold mb-2'>
                   Players in Room
                 </h3>
-                <div className='space-y-2'>
+                <ul className='space-y-2 lg:mb-4 mb-2 w-full'>
                   {players?.map((player) => (
-                    <div
+                    <li
                       key={player.userId}
-                      className={`p-3 rounded-lg flex items-center justify-center ${player.name === name ? 'bg-blue-200' : 'bg-gray-200'}`}
+                      className={`p-2 rounded-lg flex-1 flex justify-center items-center ${player.name === name ? 'bg-blue-200' : 'bg-gray-200'}`}
                     >
-                      <span className='text-gray-800'>{player.name}</span>
-                    </div>
+                      <div className='flex flex-1 justify-center'>{player.name}</div>
+                      <button
+                        // onClick={() => handleRemovePlayer(index)}
+                        className='justify-end bg-red-500 hover:bg-red-700 rounded px-3 text-white text-center h-8'
+                      >
+                        X
+                      </button>
+                    </li>
                   ))}
                   {players?.length === 0 && (
-                    <p className='text-gray-500 text-sm'>No players in the room yet.</p>
+                    <p className=' text-sm'>No players in the room yet.</p>
                   )}
-                </div>
+                </ul>
               </div>
               <button
                 onClick={handleBack}

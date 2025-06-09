@@ -34,12 +34,10 @@ export const ReviewScreen = () => {
 
   return (
     <div className='flex flex-col lg:text-xl w-full items-center justify-between lg:justify-start lg:mb-16 px-2 lg:px-0 box-border h-[80vh]'>
-      <>
-        <h1 className='lg:text-3xl text-2xl font-bold mb-4 lg:mt-4'>
-          Scores for {players[targetPlayerIndex].name}'s Turn
-        </h1>
-      </>
-      <div className='flex flex-col w-full justify-start'>
+      <h1 className='lg:text-3xl text-2xl font-bold mb-4 lg:mt-4'>
+        Scores for {players[targetPlayerIndex].name}'s Turn
+      </h1>
+      <div className='flex flex-col w-full justify-start h-full'>
         <div className='flex lg:flex-col items-center justify-center'>
           <div className='px-2'>
             <h2 className='font-semibold mb-2 text-xl underline underline-offset-4 text-center'>
@@ -47,8 +45,10 @@ export const ReviewScreen = () => {
             </h2>
             <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly'>
               {targetRankings.map((card, index) => (
-                <div
-                  className={`group
+                <div className='flex lg:flex-col justify-center items-center'>
+                  <span className='inline-flex items-center pr-2 py-1 lg:mr-0 lg:mb-1 font-medium'>{index + 1}</span>
+                  <div
+                    className={`group
                       flex
                       relative
                       border-2
@@ -77,9 +77,10 @@ export const ReviewScreen = () => {
                       md:leading-tight
                       lg:leading-normal
                       break-words`}
-                  key={index}
-                >
-                  {card}
+                    key={index}
+                  >
+                    {card}
+                  </div>
                 </div>
               ))}
             </div>
@@ -96,14 +97,14 @@ export const ReviewScreen = () => {
                 {groupPredictions.map((card, index) => (
                   <div className='flex lg:flex-col justify-center items-center' key={index}>
                     <span
-                      className={`inline-flex items-center rounded-md bg-red-50 px-2 py-1 mr-2 lg:mr-0 lg:mb-1 font-medium ring-1 ring-inset ${diffsArray[index] === 0
+                      className={`inline-flex items-center rounded-md bg-red-50 w-10 justify-center p-1 lg:mb-1 font-medium ring-1 ring-inset ${diffsArray[index] === 0
                         ? 'text-green-600 ring-green-600'
                         : diffsArray[index] < 3
                           ? 'text-yellow-600 ring-yellow-600'
                           : 'text-red-600 ring-red-600'
                         }`}
                     >
-                      {4 - diffsArray[index]}
+                      +{4 - diffsArray[index]}
                     </span>
                     <div
                       className={`group
@@ -151,7 +152,7 @@ export const ReviewScreen = () => {
                         {player.name}
                       </h3>
                       {gameMode === GameModes.ONLINE && (
-                        <p className=' font-medium text-lg lg:text-xl text-center leading-none'>
+                        <p className='font-medium text-lg lg:text-xl text-center leading-none'>
                           Score: {player.roundScore || 0}/20
                         </p>
                       )}
@@ -169,7 +170,7 @@ export const ReviewScreen = () => {
                                   : 'text-red-600 ring-red-600'
                                 }`}
                             >
-                              {4 - diff}
+                              +{4 - diff}
                             </span>
                             <div
                               className={`group
@@ -219,7 +220,7 @@ export const ReviewScreen = () => {
           </div>
         </div>
 
-        <div className='flex flex-row md:mt-3 lg:mb-16 justify-center bottom-8 lg:bottom-0 fixed w-full'>
+        <div className='flex flex-row md:mt-3 lg:mb-16 pb-2 md:pb-4 justify-evenly bottom-8 lg:bottom-0 fixed w-full'>
           {gameMode === GameModes.SINGLE_DEVICE && (
             <p className='text-2xl font-semibold underline underline-offset-4 flex items-center'>
               Score: {roundScore}/20

@@ -1,6 +1,7 @@
 import './App.css';
 import PreferencesGame from './components/PreferencesGame';
 import { GameProvider } from './context/GameProvider';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <GameProvider>
         <PreferencesGame />
       </GameProvider>
+      <Toaster position="top-center" />
     </>
   );
 }
