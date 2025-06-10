@@ -39,14 +39,14 @@ export const ReviewScreen = () => {
       </h1>
       <div className='flex flex-col w-full justify-start h-full'>
         <div className='flex lg:flex-col items-center justify-center'>
-          <div className='px-2'>
+          <div className=''>
             <h2 className='font-semibold mb-2 text-xl underline underline-offset-4 text-center'>
               {playerName}
             </h2>
             <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly'>
               {targetRankings.map((card, index) => (
                 <div className='flex lg:flex-col justify-center items-center'>
-                  <span className='inline-flex items-center pr-2 py-1 lg:mr-0 lg:mb-1 font-medium'>{index + 1}</span>
+                  <span className='inline-flex items-center mr-1 py-1 lg:mr-0 lg:mb-1 font-medium'>{index + 1}</span>
                   <div
                     className={`group
                       flex
@@ -86,7 +86,7 @@ export const ReviewScreen = () => {
             </div>
           </div>
 
-          <div className='lg:mt-2 h-full lg:h-auto overflow-x-auto lg:overflow-y-auto no-scrollbar px-2'>
+          <div className='lg:mt-2 h-full lg:h-auto overflow-x-auto lg:overflow-y-auto no-scrollbar'>
             {gameMode === GameModes.SINGLE_DEVICE && (
               <h2 className='font-semibold mb-2 text-xl underline underline-offset-4 text-center'>
                 Group
@@ -97,7 +97,7 @@ export const ReviewScreen = () => {
                 {groupPredictions.map((card, index) => (
                   <div className='flex lg:flex-col justify-center items-center' key={index}>
                     <span
-                      className={`inline-flex items-center rounded-md bg-red-50 w-10 justify-center p-1 lg:mb-1 font-medium ring-1 ring-inset ${diffsArray[index] === 0
+                      className={`inline-flex items-center rounded-md bg-red-50 mr-1 lg:mr-0 justify-center p-1 lg:mb-1 font-medium ring-1 ring-inset ${diffsArray[index] === 0
                         ? 'text-green-600 ring-green-600'
                         : diffsArray[index] < 3
                           ? 'text-yellow-600 ring-yellow-600'
@@ -146,7 +146,7 @@ export const ReviewScreen = () => {
             ) : (
               <div className='flex lg:max-h-[60vh] pb-2 lg:pb-0 lg:flex-col'>
                 {gameRoom?.players?.filter((_, index) => index !== targetPlayerIndex).map((player) => (
-                  <div className='flex flex-col min-w-max justify-center items-center mx-2 lg:mx-0 bg-gray-200 rounded-lg border-2 border-gray-300 p-2 lg:mb-4' key={player.userId}>
+                  <div className='flex flex-col min-w-max justify-center items-center ml-1 lg:mx-0 bg-gray-200 rounded-lg border-2 border-gray-300 px-1 lg:mb-4' key={player.userId}>
                     <div className='flex flex-col sm:grid sm:grid-cols-2 justify-center items-center w-full border-b-2 border-gray-300 pb-1 mb-1'>
                       <h3 className='font-medium text-lg lg:text-xl text-center'>
                         {player.name}
@@ -163,7 +163,7 @@ export const ReviewScreen = () => {
                         return (
                           <div className='flex lg:flex-col justify-center items-center' key={cardIndex}>
                             <span
-                              className={`inline-flex items-center rounded-md bg-red-50 px-2 py-1 mr-2 lg:mr-0 lg:mb-1 font-medium ring-1 ring-inset ${diff === 0
+                              className={`inline-flex items-center rounded-md bg-red-50 p-1 mr-1 lg:mr-0 lg:mb-1 font-medium ring-1 ring-inset ${diff === 0
                                 ? 'text-green-600 ring-green-600'
                                 : diff < 3
                                   ? 'text-yellow-600 ring-yellow-600'
