@@ -1,4 +1,5 @@
 import { useDrag } from 'react-dnd';
+import { Card } from './Card';
 
 export const ITEM_TYPE = 'CARD';
 
@@ -14,26 +15,16 @@ export const DraggableCard = ({ card }: { card: string }) => {
   return (
     <div
       ref={drag}
-      className={`
-        flex relative items-center justify-center
-        w-[40vw] md:w-[30vw] max-w-60 lg:w-[15vw] h-[12vh] md:h-[13vh] lg:h-[14vh]
-        p-1 md:p-2 lg:p-4
-        mb-2 md:mb-3 lg:mb-4
-        text-lg md:text-xl
-        leading-none
-        md:leading-tight
-        lg:leading-normal
-        text-center break-words select-none
-        cursor-pointer
-        border rounded-lg
-        bg-blue-50 border-blue-800
-        shadow-lg shadow-blue-900
-        transform transition-all
-        hover:scale-105 hover:shadow-2xl
-        ${isDragging ? 'opacity-50 border-red-600 border-4' : ''}
-      `}
+      className={`mb-2 md:mb-3 lg:mb-4 ${isDragging ? 'opacity-50' : ''}`}
     >
-      {card}
+      <Card
+        variant="default"
+        size="medium"
+        showHover={true}
+        className={`bg-blue-50 border-blue-800 shadow-lg shadow-blue-900 hover:shadow-2xl ${isDragging ? 'border-red-600 border-4' : ''}`}
+      >
+        {card}
+      </Card>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { GameModes, useGameContext } from '../context/GameContext';
 import { Footer } from './Footer';
+import { ResultCard } from './ResultCard';
 
 export const ReviewScreen = () => {
   const {
@@ -38,55 +39,26 @@ export const ReviewScreen = () => {
         Scores for {players[targetPlayerIndex].name}'s Turn
       </h1>
       <div className='flex flex-col w-full justify-start h-full'>
-        <div className='flex lg:flex-col items-center justify-center'>
-          <div className=''>
+        <div className='flex lg:flex-col items-center justify-center mx-auto'>
+          <div className='px-2'>
             <h2 className='font-semibold mb-2 text-xl underline underline-offset-4 text-center'>
               {playerName}
             </h2>
             <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly'>
               {targetRankings.map((card, index) => (
-                <div className='flex lg:flex-col justify-center items-center'>
-                  <span className='inline-flex items-center mr-1 py-1 lg:mr-0 lg:mb-1 font-medium'>{index + 1}</span>
-                  <div
-                    className={`group
-                      flex
-                      relative
-                      border-2
-                      rounded-lg
-                      mb-2
-                      text-center
-                      cursor-pointer
-                      bg-blue-50
-                      border-blue-600
-                      shadow-blue-800
-                      shadow-md
-                      transform
-                      transition-all
-                      hover:scale-105
-                      hover:shadow-xl
-                      items-center
-                      justify-center
-                      min-w-32
-                      max-w-60
-                      md:text-lg
-                      text-base
-                      w-[40vw] md:w-[30vw] lg:w-[15vw]  h-[11vh]
-                      lg:p-4
-                      p-1.5
-                      leading-none
-                      md:leading-tight
-                      lg:leading-normal
-                      break-words`}
-                    key={index}
-                  >
-                    {card}
-                  </div>
-                </div>
+                <ResultCard
+                  key={index}
+                  text={card}
+                  rank={index + 1}
+                  showRank={true}
+                  variant="default"
+                  size="medium"
+                />
               ))}
             </div>
           </div>
 
-          <div className='lg:mt-2 h-full lg:h-auto overflow-x-auto lg:overflow-y-auto no-scrollbar'>
+          <div className='lg:mt-4 p-1 md:p-2 h-full lg:h-auto overflow-x-auto lg:overflow-y-auto no-scrollbar'>
             {gameMode === GameModes.SINGLE_DEVICE && (
               <h2 className='font-semibold mb-2 text-xl underline underline-offset-4 text-center'>
                 Group
@@ -94,54 +66,25 @@ export const ReviewScreen = () => {
             )}
             {gameMode === GameModes.SINGLE_DEVICE ? (
               <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly'>
-                {groupPredictions.map((card, index) => (
-                  <div className='flex lg:flex-col justify-center items-center' key={index}>
-                    <span
-                      className={`inline-flex items-center rounded-md bg-red-50 mr-1 lg:mr-0 justify-center p-1 lg:mb-1 font-medium ring-1 ring-inset ${diffsArray[index] === 0
-                        ? 'text-green-600 ring-green-600'
-                        : diffsArray[index] < 3
-                          ? 'text-yellow-600 ring-yellow-600'
-                          : 'text-red-600 ring-red-600'
-                        }`}
-                    >
-                      +{4 - diffsArray[index]}
-                    </span>
-                    <div
-                      className={`group
-                        flex
-                        relative
-                        border-2
-                        rounded-lg
-                        mb-2
-                        text-center
-                        cursor-pointer
-                        ${diffsArray[index] === 0
-                          ? 'shadow-green-900 bg-green-50 border-green-600'
-                          : diffsArray[index] < 3
-                            ? 'shadow-yellow-900 bg-yellow-50 border-yellow-600'
-                            : 'shadow-red-900 bg-red-50 border-red-600'
-                        }
-                        shadow-md
-                        transform
-                        transition-all
-                        hover:scale-105
-                        hover:shadow-xl
-                        items-center
-                        justify-center
-                        w-[40vw] md:w-[30vw] lg:w-[15vw]  h-[11vh]
-                        md:text-xl
-                        text-lg
-                        p-2
-                        lg:p-4
-                        leading-none
-                        md:leading-tight
-                        lg:leading-normal
-                        break-words`}
-                    >
-                      {card}
-                    </div>
-                  </div>
-                ))}
+                {groupPredictions.map((card, index) => {
+                  const score = 4 - diffsArray[index];
+                  const variant = diffsArray[index] === 0
+                    ? 'success'
+                    : diffsArray[index] < 3
+                      ? 'warning'
+                      : 'error';
+
+                  return (
+                    <ResultCard
+                      key={index}
+                      text={card}
+                      score={score}
+                      showScore={true}
+                      variant={variant}
+                      size="medium"
+                    />
+                  );
+                })}
               </div>
             ) : (
               <div className='flex lg:max-h-[60vh] pb-2 lg:pb-0 lg:flex-col'>
@@ -160,55 +103,22 @@ export const ReviewScreen = () => {
                     <div className='lg:grid lg:grid-cols-5 lg:gap-4 flex flex-col justify-evenly'>
                       {targetRankings.map((_, cardIndex) => {
                         const diff = Math.abs(targetRankings.indexOf(player.rankings?.[cardIndex] || '') - cardIndex);
+                        const score = 4 - diff;
+                        const variant = diff === 0
+                          ? 'success'
+                          : diff < 3
+                            ? 'warning'
+                            : 'error';
+
                         return (
-                          <div className='flex lg:flex-col justify-center items-center' key={cardIndex}>
-                            <span
-                              className={`inline-flex items-center rounded-md bg-red-50 p-1 mr-1 lg:mr-0 lg:mb-1 font-medium ring-1 ring-inset ${diff === 0
-                                ? 'text-green-600 ring-green-600'
-                                : diff < 3
-                                  ? 'text-yellow-600 ring-yellow-600'
-                                  : 'text-red-600 ring-red-600'
-                                }`}
-                            >
-                              +{4 - diff}
-                            </span>
-                            <div
-                              className={`group
-                              flex
-                              relative
-                              border-2
-                              rounded-lg
-                              mb-2
-                              text-center
-                              cursor-pointer
-                              ${diff === 0
-                                  ? 'shadow-green-900 bg-green-50 border-green-600'
-                                  : diff < 3
-                                    ? 'shadow-yellow-900 bg-yellow-50 border-yellow-600'
-                                    : 'shadow-red-900 bg-red-50 border-red-600'
-                                }
-                              shadow-md
-                              transform
-                              transition-all
-                              hover:scale-105
-                              hover:shadow-xl
-                              items-center
-                              justify-center
-                              w-[40vw] md:w-[30vw] lg:w-[15vw] h-[11vh]
-                              min-w-32
-                              max-w-60
-                              md:text-lg
-                              text-base
-                              lg:p-4
-                              p-1.5
-                              leading-none
-                              md:leading-tight
-                              lg:leading-normal
-                              break-words`}
-                            >
-                              {player.rankings?.[cardIndex]}
-                            </div>
-                          </div>
+                          <ResultCard
+                            key={cardIndex}
+                            text={player.rankings?.[cardIndex] || ''}
+                            score={score}
+                            showScore={true}
+                            variant={variant}
+                            size="medium"
+                          />
                         );
                       })}
                     </div>
