@@ -61,7 +61,7 @@ export const SetupScreen = () => {
       </h1>
 
       {/* Game Mode */}
-      <div className='text-lg w-[96%] md:w-auto md:m-4 rounded-xl bg-gray-200 p-3 md:p-4 lg:p-8 overflow-auto no-scrollbar '>
+      <div className='text-lg w-[96%] p-4 md:p-8 lg:p-8 m-auto rounded-xl bg-gray-200 overflow-y-auto no-scrollbar'>
         <div className="bg-white rounded-xl shadow-sm shadow-blue-900 p-4 w-full">
           <div role='tablist' className='inline-block'>
             <div className='flex items-center mb-2'>
