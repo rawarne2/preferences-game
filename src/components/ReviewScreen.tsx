@@ -34,13 +34,13 @@ export const ReviewScreen = () => {
 
 
   return (
-    <div className='flex flex-col lg:text-xl w-full items-center justify-between lg:justify-start lg:mb-16 px-2 lg:px-0 box-border h-[80vh]'>
+    <div className='flex flex-col lg:text-xl w-full items-center justify-between lg:justify-start lg:mb-16 md:px-2 lg:px-0 box-border h-[80vh]'>
       <h1 className='lg:text-3xl text-2xl font-bold mb-4 lg:mt-4'>
         Scores for {players[targetPlayerIndex].name}'s Turn
       </h1>
       <div className='flex flex-col w-full justify-start h-full'>
         <div className='flex lg:flex-col items-center justify-center mx-auto'>
-          <div className='px-2'>
+          <div className='px-1 md:px-2'>
             <h2 className='font-semibold mb-2 text-xl underline underline-offset-4 text-center'>
               {playerName}
             </h2>
