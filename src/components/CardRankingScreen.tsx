@@ -1,7 +1,6 @@
 import { DragAndDropRanking } from './DragAndDropRanking';
 import { GameModes, useGameContext } from '../context/GameContext';
 import { Footer } from './Footer';
-import { ResetGameButton } from './ResetGameButton';
 import { useState } from 'react';
 // TODO: rename onlineUserId to onlinePlayerId
 export const CardRankingScreen = () => {
@@ -63,7 +62,6 @@ export const CardRankingScreen = () => {
       <div className='lg:h-4/5'>
         <DragAndDropRanking availableCards={availableCards} rankedCards={rankedCards} setRankedCards={setRankedCards} setAvailableCards={setAvailableCards} />
         <div className='flex flex-row mt-2 lg:my-8 justify-center'>
-          <ResetGameButton />
           <button
             onClick={handleSubmitRankings}
             className={`px-10 py-1 max-h-12 ml-6 bg-green-600 text-white font-semibold rounded hover:bg-green-700 border-2 border-green-800`}

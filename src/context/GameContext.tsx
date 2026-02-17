@@ -75,6 +75,7 @@ export type GameContextType = {
   cardDeck: string[];
   setCardDeck: React.Dispatch<React.SetStateAction<string[]>>;
   handleResetGame: () => void;
+  handleLeaveGame: () => void;
   handleUpdateScore: () => void;
   handleStartGame: () => void;
   roundScore: number;

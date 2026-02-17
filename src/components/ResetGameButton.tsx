@@ -1,34 +1,19 @@
-// import { useGameContext } from "../context/GameContext";
+import { useGameContext } from "../context/GameContext";
 
 
-export const ResetGameButton = () => {
-  // const { setGameState, setCurrentRound, setTargetPlayerIndex, setCurrentCards, setTargetRankings, setGroupPredictions } = useGameContext();
-  const clearLocalStorage = () => {
-    if (window.confirm('Are you sure you want to reset the game?')) {
-      // Preserve players data
-      const players = localStorage.getItem('players');
+export const ResetGameButton = ({ className }: { className?: string }) => {
+  const { handleResetGame } = useGameContext();
 
-      // Clear all localStorage
-      localStorage.clear();
-
-      // Restore players data
-      if (players) {
-        localStorage.setItem('players', players);
-      }
-
-      window.location.reload();
-      // setGameState('setup');
-      // setCurrentRound(0);
-      // setTargetPlayerIndex(0);
-      // setCurrentCards([]);
-      // setTargetRankings([]);
-      // setGroupPredictions([]);
+  const onReset = () => {
+    if (window.confirm('Are you sure you want to reset the game for everyone?')) {
+      handleResetGame();
     }
   };
+
   return (
     <button
-      className='px-2 py-1 max-h-12 bg-red-500 text-white rounded hover:bg-red-600'
-      onClick={clearLocalStorage}
+      className={`px-2 py-1 max-h-12 bg-red-500 text-white rounded hover:bg-red-600 hover:border-red-800 hover:border-2 ${className}`}
+      onClick={onReset}
     >
       Reset Game
     </button>

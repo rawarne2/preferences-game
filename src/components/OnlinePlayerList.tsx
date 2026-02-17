@@ -68,7 +68,7 @@ export const OnlinePlayerList: React.FC = () => {
   // Handle leaving room
   const handleBack = useCallback(() => {
     if (socket && socket.connected) {
-      socket.emit('leave-room', { roomCode, userId: onlineUserId });
+      socket.emit('leave-room', { roomCode, userId: onlineUserId }); // userId not needed to pass through
     }
     setMode('select');
     setRoomCode('');
@@ -195,7 +195,7 @@ export const OnlinePlayerList: React.FC = () => {
             </div>
           </div>
 
-          {!isNameSubmitted ? (
+          {!isNameSubmitted && (mode !== 'ready' || !players?.length) ? (
             <form onSubmit={handleNameSubmit} className='space-y-4'>
               <div>
                 <input

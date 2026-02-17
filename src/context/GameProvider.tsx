@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
+import toast from 'react-hot-toast';
 import cardDecks from '../data/cardDecks.json'; // TODO: needs optimization
 import { Category, GameContext, GameModes, GameRoom, GameState, Player } from './GameContext';
 import { io, Socket } from 'socket.io-client';
@@ -52,6 +53,9 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     onlineUserIdRef.current = onlineUserId;
   }, [onlineUserId]);
+
+  // Ref for current room players so player-left handler can derive who left (stale closure safe)
+  const roomPlayersRef = useRef<Player[]>([]);
 
   const [gameRoom, setGameRoom] = useState<GameRoom>(() => {
     const saved = localStorage.getItem('gameRoom');
@@ -137,6 +141,10 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
   }, [roomCode]);
 
   useEffect(() => {
+    roomPlayersRef.current = gameRoom?.players ?? players;
+  }, [gameRoom, players]);
+
+  useEffect(() => {
     if (currentRound > totalRounds) {
       setGameState('gameOver');
     }
@@ -204,12 +212,34 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const handlePlayerLeft = (updatedPlayers: Player[]) => {
+      const previousPlayers = roomPlayersRef.current;
+      const leftPlayer = previousPlayers.find(
+        (p) => !updatedPlayers.some((u) => u.userId === p.userId)
+      );
+      const leftName = leftPlayer?.name ?? 'A player';
+      toast(`${leftName} has left the game`, { duration: 5000 });
       console.log('player left', updatedPlayers);
       setPlayers(updatedPlayers);
-      setGameRoom({
-        ...gameRoom,
-        players: updatedPlayers
-      });
+      setGameRoom((prev) => ({
+        ...prev,
+        players: updatedPlayers,
+        game: {
+          ...prev.game,
+          currentRound: 1,
+          totalRounds: prev.game?.totalRounds ?? 3,
+          targetPlayerIndex: 0,
+          currentCards: [],
+          targetRankings: [],
+          groupPredictions: [],
+        },
+      }));
+      setGameState('setup');
+      setMode('ready');
+      setCurrentRound(1);
+      setTargetPlayerIndex(0);
+      setCurrentCards([]);
+      setTargetRankings([]);
+      setGroupPredictions([]);
     };
 
     const handleError = (errorMessage: Error) => {
@@ -280,6 +310,19 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       console.log('room deleted');
     };
 
+    const handleGameReset = (updatedGameRoom: GameRoom) => {
+      console.log('game reset', updatedGameRoom);
+      setGameRoom(updatedGameRoom);
+      setPlayers(updatedGameRoom.players || []);
+      setCurrentRound(updatedGameRoom.game?.currentRound || 1);
+      setTargetPlayerIndex(updatedGameRoom.game?.targetPlayerIndex || 0);
+      setCurrentCards(updatedGameRoom.game?.currentCards || []);
+      setTargetRankings(updatedGameRoom.game?.targetRankings || []);
+      setGroupPredictions(updatedGameRoom.game?.groupPredictions || []);
+      setGameState('setup');
+      setMode('ready');
+    };
+
     const handleGameOver = () => {
       console.log('game over');
     };
@@ -305,6 +348,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     newSocket.on('rankings-submitted', handleRankingsSubmitted);
     newSocket.on('score-updated', handleScoreUpdated);
     newSocket.on('room-deleted', handleRoomDeleted);
+    newSocket.on('game-reset', handleGameReset);
     newSocket.on('game-over', handleGameOver);
     newSocket.on('message', handleMessage);
 
@@ -358,34 +402,67 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
     []
   );
 
-
-  const handleResetGame = () => {
+  // Resets core game state back to defaults (shared by handleResetGame and handleLeaveGame)
+  const resetGameState = () => {
     setGameState('setup');
-    setPlayers([]);
     setCurrentRound(1);
     setTargetPlayerIndex(0);
     setCurrentCards([]);
     setTargetRankings([]);
     setGroupPredictions([]);
-    setOnlineUserId('');
-    setRoomCode('');
-    setGameMode(GameModes.SINGLE_DEVICE);
-    setGameRoom({
-      code: '',
-      players: [],
-      game: {
-        currentRound: 1,
-        totalRounds: 5,
-        targetPlayerIndex: 0,
-        currentCards: [],
-        targetRankings: [],
-        groupPredictions: [],
-      }
-    });
+  };
+
+  // host ends the game and resets the game state for all players
+  // goes to setup screen with players still in the game room
+  const handleResetGame = () => {
+    if (gameMode === GameModes.ONLINE) {
+      // Emit reset-game to server; server broadcasts 'game-reset' to all players in the room
+      socket?.emit('reset-game', roomCode);
+      setMode('ready');
+    }
+    resetGameState();
+    // Keep players in the list, but reset their scores
+    setPlayers(prev => prev.map(player => ({ ...player, score: 0 })));
+  };
+
+  // Online only: resets the game state for the current player and removes them from the room
+  // Goes to setup screen; other players remain in the game room
+  // Backend handles: removing the player from the room, setting a new host if needed,
+  // and ending the game if fewer than 2 players remain
+  const handleLeaveGame = () => {
+    if (gameMode === GameModes.ONLINE && socket?.connected) {
+      // Emit same payload as OnlinePlayerList so backend can identify who left
+      socket.emit('leave-room', { roomCode, userId: onlineUserId });
+      // Delay clearing state so the server receives the emit and can broadcast
+      // player-left to others before our socket disconnects (gameMode change tears down socket)
+      setTimeout(() => {
+        setOnlineUserId('');
+        setRoomCode('');
+        setGameRoom({
+          code: '',
+          players: [],
+          game: {
+            currentRound: 1,
+            totalRounds: 3,
+            targetPlayerIndex: 0,
+            currentCards: [],
+            targetRankings: [],
+            groupPredictions: [],
+          }
+        });
+        // Stay in online mode so the user lands on the online setup screen (create/join)
+        setMode('select');
+        resetGameState();
+        setPlayers([]);
+      }, 400);
+      return;
+    }
+    resetGameState();
+    setPlayers([]);
   };
 
   const calculateRoundScore = () => {
-    let total = 20;
+    let total = 20; // max score. deduct points for distance from correct answer
 
     if (groupPredictions.length === 0) {
       return 0;
@@ -568,6 +645,7 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Handler functions
     handleResetGame,
+    handleLeaveGame,
     handleUpdateScore,
     handleStartGame,
 

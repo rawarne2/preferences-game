@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useGameContext } from "../context/GameContext";
-import { ResetGameButton } from "./ResetGameButton";
 
 export const WaitingForRankingsScreen = () => {
     const { gameRoom, targetPlayerIndex, setGameState, setTargetRankings, socket } = useGameContext();
@@ -52,7 +51,6 @@ export const WaitingForRankingsScreen = () => {
                     </ul>
                 </div>
             </div>
-            <ResetGameButton />
         </div>
     )
 }

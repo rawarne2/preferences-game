@@ -83,7 +83,7 @@ export const SetupScreen = () => {
                   : 'bg-gray-400 hover:bg-gray-1000'
                   }`}
               >
-                Offline
+                1 Device
               </button>
               <button
                 title='Online'
@@ -103,10 +103,9 @@ export const SetupScreen = () => {
                 <div className='space-y-2'>
                   <div>
                     <div>
-
                       <span className='font-semibold text-blue-700'>General Rules:</span> Players take turn ranking which cards they prefer from most (1) to least (5). Other players guess the order that the target player ranked the cards. Players score points depending on how close their guess is to the target player's rankings. Only non-target players can score points for that turn.
                     </div>
-                    <span className='font-semibold text-blue-700'>Offline:</span> Play on a single device with players in person. The players that are not the target player, must agree as a group how the target player ranked the cards.
+                    <span className='font-semibold text-blue-700'>1 Device:</span> Play on a single device with players in person. The players that are not the target player, must agree as a group how the target player ranked the cards.
                   </div>
                   <div>
                     <span className='font-semibold text-blue-700'>Online:</span> Create or join a game room to play with friends on different devices. Non-target players must each guess the target player's rankings. The host can set the number of rounds, category, and start the game.

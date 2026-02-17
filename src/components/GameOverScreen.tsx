@@ -1,7 +1,8 @@
-import { useGameContext } from '../context/GameContext';
+import { GameModes, useGameContext } from '../context/GameContext';
 
 export const GameOverScreen = () => {
-  const { players, handleResetGame } = useGameContext();
+  const { players, handleResetGame, gameMode, gameRoom, onlineUserId } = useGameContext();
+  const isHost = gameMode !== GameModes.ONLINE || gameRoom?.players?.find(p => p.userId === onlineUserId)?.isHost;
   const winner = [...players].sort((a, b) => b.score - a.score)[0];
   const isTie = players.filter((p) => p.score === winner.score).length > 1;
 
@@ -34,12 +35,14 @@ export const GameOverScreen = () => {
         </ul>
       </div>
 
-      <button
-        onClick={handleResetGame}
-        className='mt-6 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-      >
-        Play Again
-      </button>
+      {isHost && (
+        <button
+          onClick={handleResetGame}
+          className='mt-6 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+        >
+          End Game
+        </button>
+      )}
     </div>
   );
 };
