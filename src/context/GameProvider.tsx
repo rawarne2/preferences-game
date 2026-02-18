@@ -216,9 +216,15 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
       const leftPlayer = previousPlayers.find(
         (p) => !updatedPlayers.some((u) => u.userId === p.userId)
       );
-      const leftName = leftPlayer?.name ?? 'A player';
-      toast(`${leftName} has left the game`, { duration: 5000 });
+      const isCurrentUser = leftPlayer?.userId === onlineUserIdRef.current;
+      toast(
+        isCurrentUser
+          ? 'The host has removed you from the game room'
+          : `${leftPlayer?.name ?? 'A player'} has left the game`,
+        { duration: 5000 }
+      );
       console.log('player left', updatedPlayers);
+
       setPlayers(updatedPlayers);
       setGameRoom((prev) => ({
         ...prev,
@@ -234,12 +240,26 @@ export const GameProvider = ({ children }: { children: React.ReactNode }) => {
         },
       }));
       setGameState('setup');
-      setMode('ready');
       setCurrentRound(1);
       setTargetPlayerIndex(0);
       setCurrentCards([]);
       setTargetRankings([]);
       setGroupPredictions([]);
+
+      // If this client was the one removed, return them to the online setup screen and clear join state
+      if (isCurrentUser) {
+        setMode('select');
+        setRoomCode('');
+        setPlayers([]);
+        setGameRoom((prev) => ({
+          ...prev,
+          code: '',
+          players: [],
+        }));
+        setError('');
+      } else {
+        setMode('ready');
+      }
     };
 
     const handleError = (errorMessage: Error) => {

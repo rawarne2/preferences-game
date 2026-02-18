@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useGameContext } from '../context/GameContext';
 import { v4 as uuidv4 } from 'uuid';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -10,7 +10,7 @@ export const OnlinePlayerList: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [isNameSubmitted, setIsNameSubmitted] = useState<boolean>(false);
 
-  const { players, setPlayers, socket, roomCode, setRoomCode, isConnecting, error, setError, mode, setMode, onlineUserId, setOnlineUserId } = useGameContext(); // currentOnlineuserId. 
+  const { players, setPlayers, socket, roomCode, setRoomCode, isConnecting, error, setError, mode, setMode, onlineUserId, setOnlineUserId, gameRoom } = useGameContext(); // currentOnlineuserId. 
 
   const newId = uuidv4();
 
@@ -68,7 +68,7 @@ export const OnlinePlayerList: React.FC = () => {
   // Handle leaving room
   const handleBack = useCallback(() => {
     if (socket && socket.connected) {
-      socket.emit('leave-room', { roomCode, userId: onlineUserId }); // userId not needed to pass through
+      socket.emit('leave-room', { roomCode, userId: onlineUserId });
     }
     setMode('select');
     setRoomCode('');
@@ -79,9 +79,31 @@ export const OnlinePlayerList: React.FC = () => {
     setError('');
   }, [socket, roomCode, setPlayers, setError, setMode, setRoomCode, onlineUserId]);
 
+  // Clear join inputs whenever we're on the select screen (e.g. after being removed by host)
+  useEffect(() => {
+    if (mode === 'select') {
+      setInputCode('');
+      setName('');
+      setIsNameSubmitted(false);
+    }
+  }, [mode]);
+
+  const isHost = gameRoom?.players?.find((player) => player.userId === onlineUserId)?.isHost;
+
+  // Host-only: remove a player from the room
+  const handleRemovePlayer = useCallback(
+    (userId: string) => {
+      if (!isHost) return;
+      if (socket && socket.connected && roomCode) {
+        socket.emit('leave-room', { roomCode, userId });
+      }
+    },
+    [isHost, socket, roomCode]
+  );
+
   return (
     <div className='bg-white rounded-xl shadow-sm shadow-blue-900 lg:p-8 p-4 my-4 w-full'>
-      <h2 className='text-2xl font-bold text-blue-600 text-center'>
+      <h2 className='text-2xl font-bold text-blue-600 text-center mb-4'>
         Game Room Setup
       </h2>
 
@@ -218,10 +240,6 @@ export const OnlinePlayerList: React.FC = () => {
             </form>
           ) : (
             <div className='space-y-4'>
-              {/* <div className='bg-blue-200 p-4 rounded-lg'>
-                <p className='text-sm text-blue-600'>Your name:</p>
-                <p className='font-medium'>{name}</p>
-              </div> */}
               <div>
                 <h3 className='text-xl font-semibold mb-2'>
                   Players in Room
@@ -230,15 +248,17 @@ export const OnlinePlayerList: React.FC = () => {
                   {players?.map((player) => (
                     <li
                       key={player.userId}
-                      className={`p-2 rounded-lg flex-1 flex justify-center items-center ${player.name === name ? 'bg-blue-200' : 'bg-gray-200'}`}
+                      className={`relative p-2 rounded-lg flex justify-center items-center ${player.name === name ? 'bg-blue-200' : 'bg-gray-200'}`}
                     >
-                      <div className='flex flex-1 justify-center'>{player.name}</div>
-                      <button
-                        // onClick={() => handleRemovePlayer(index)}
-                        className='justify-end bg-red-500 hover:bg-red-700 rounded px-3 text-white text-center h-8'
-                      >
-                        X
-                      </button>
+                      <div className='flex-1 text-center'>{player.name}</div>
+                      {isHost && player.userId !== onlineUserId && (
+                        <button
+                          onClick={() => handleRemovePlayer(player.userId)}
+                          className='absolute right-2 top-1/2 -translate-y-1/2 bg-red-500 hover:bg-red-700 rounded px-2 text-white text-center h-6'
+                        >
+                          X
+                        </button>
+                      )}
                     </li>
                   ))}
                   {players?.length === 0 && (
